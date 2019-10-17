@@ -1,0 +1,11 @@
+{
+    "name": "pavel/fastly-extension",
+    "type": "typo3-cms-extension",
+    "authors": [
+        {
+            "name": "Pavel Musitschenko",
+            "email": "pavel.musitschenko@hdnet.de"
+        }
+    ],
+    "require": {}
+}
