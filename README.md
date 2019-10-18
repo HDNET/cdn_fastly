@@ -1,1 +1,1 @@
-# fastly-extension
+# cdn_fastly
