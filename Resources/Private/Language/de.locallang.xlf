@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="de" datatype="plaintext" original="messages" date="2014-06-02T11:47:10Z" product-name="frontend_login">
+        <header/>
+        <body>
+
+            <trans-unit id="title" xml:space="preserve">
+				<source>User Data</source>
+				<target>Nutzerdaten</target>
+			</trans-unit>
+
+            <trans-unit id="logintitle" xml:space="preserve">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+
+            <trans-unit id="username" xml:space="preserve">
+				<source>Username</source>
+				<target>Nutzername</target>
+			</trans-unit>
+
+            <trans-unit id="password" xml:space="preserve">
+				<source>Password</source>
+				<target>Passwort</target>
+			</trans-unit>
+
+			<trans-unit id="language" xml:space="preserve">
+				<source>Language (no selection = all languages)</source>
+				<target>Sprache (keine Auswahl = alle Sprachen)</target>
+			</trans-unit>
+
+			<trans-unit id="general" xml:space="preserve">
+				<source>General</source>
+				<target>Allgemein</target>
+			</trans-unit>
+
+			<trans-unit id="languages" xml:space="preserve">
+				<source>Languages</source>
+				<target>Sprachen</target>
+			</trans-unit>
+
+			<trans-unit id="hidden" xml:space="preserve">
+				<source>Hidden</source>
+				<target>Versteckt</target>
+			</trans-unit>
+
+        </body>
+    </file>
+</xliff>
