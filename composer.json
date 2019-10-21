@@ -8,11 +8,11 @@
 		}
 	],
 	"require": {
-		"fastly/fastly": "^0.3.0",
-		"typo3/cms-core": "^9.5",
-		"typo3/cms-backend": "^9.5",
-		"typo3/cms-extbase": "^9.5",
-		"php": ">=7.3.0"
+		"php": ">=7.2.0",
+		"fastly/fastly": "^0.3",
+		"typo3/cms-core": "^8.7||^9.5||dev-master",
+		"typo3/cms-backend": "^8.7||^9.5||dev-master",
+		"typo3/cms-extbase": "^8.7||^9.5||dev-master"
 	},
 	"autoload": {
 		"psr-4": {
