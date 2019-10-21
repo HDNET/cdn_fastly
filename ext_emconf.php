@@ -1,8 +1,8 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'Fastly Extension',
-    'description' => 'Fastly Extension',
+    'title' => 'cdn_fastly',
+    'description' => 'cdn_fastly',
     'category' => 'be',
     'author' => 'Pavel Musitschenko',
     'author_email' => 'pavel.musitschenko@hdnet.de',

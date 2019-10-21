@@ -4,46 +4,6 @@
 		<header/>
 		<body>
 
-			<trans-unit id="title" xml:space="preserve">
-				<source>User Data</source>
-			</trans-unit>
-
-
-            <trans-unit id="logintitle" xml:space="preserve">
-				<source>Title</source>
-			</trans-unit>
-
-
-            <trans-unit id="username" xml:space="preserve">
-				<source>Username</source>
-			</trans-unit>
-
-
-            <trans-unit id="password" xml:space="preserve">
-				<source>Password</source>
-			</trans-unit>
-
-
-			<trans-unit id="language" xml:space="preserve">
-				<source>Language (no selection = all languages)</source>
-			</trans-unit>
-
-
-			<trans-unit id="general" xml:space="preserve">
-				<source>General</source>
-			</trans-unit>
-
-
-			<trans-unit id="languages" xml:space="preserve">
-				<source>Languages</source>
-			</trans-unit>
-
-
-			<trans-unit id="hidden" xml:space="preserve">
-				<source>Hidden</source>
-			</trans-unit>
-
-
 
 		</body>
 	</file>
