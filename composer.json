@@ -19,9 +19,18 @@
 			"Pavel\\CdnFastly\\": "Classes"
 		}
 	},
+	"config": {
+		"vendor-dir": ".Build/vendor",
+		"bin-dir": ".Build/bin"
+	},
 	"extra": {
 		"typo3/cms": {
-			"extension-key": "cdn_fastly"
+			"extension-key": "cdn_fastly",
+			"cms-package-dir": "{$vendor-dir}/typo3/cms",
+			"web-dir": ".Build/Web"
 		}
+	},
+	"require-dev": {
+		"nimut/testing-framework": "^4.1"
 	}
 }
