@@ -54,6 +54,13 @@ class FastlyMiddleware implements MiddlewareInterface
         return $response;
     }
 
+    protected function isEnvironmentInFrontendMode(): bool
+    {
+        // We don't need extbase here, so no ObjectManager, yet.
+        $environmentService = GeneralUtility::makeInstance(EnvironmentService::class);
+        return $environmentService->isEnvironmentInFrontendMode();
+    }
+
     protected function isFastlyDisabledOrNotConfigured(): bool
     {
         return !($GLOBALS['TSFE']->page['fastly'] ?? false);
@@ -96,12 +103,5 @@ class FastlyMiddleware implements MiddlewareInterface
         }
 
         return $response->withHeader('Cache-Control', $cacheControlHeaderValue);
-    }
-
-    protected function isEnvironmentInFrontendMode(): bool
-    {
-        // We don't need extbase here, so no ObjectManager, yet.
-        $environmentService = GeneralUtility::makeInstance(EnvironmentService::class);
-        return $environmentService->isEnvironmentInFrontendMode();
     }
 }

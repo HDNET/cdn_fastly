@@ -6,6 +6,7 @@ namespace Pavel\CdnFastly\Service;
 
 use Fastly\Adapter\Guzzle\GuzzleAdapter;
 use Fastly\Fastly;
+use Fastly\FastlyInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -20,13 +21,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class FastlyService implements SingletonInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
-    /**
-     * @var GuzzleAdapter
-     */
-    protected $adapter;
 
     /**
-     * @var Fastly
+     * @var FastlyInterface
      */
     protected $fastly;
 
@@ -42,14 +39,24 @@ class FastlyService implements SingletonInterface, LoggerAwareInterface
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $configurationManager = $objectManager->get(ConfigurationManager::class);
-        $this->settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_site.']['settings.']['fastly.'] ?? [];
+        $this->setSettings($configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_site.']['settings.']['fastly.'] ?? []);
         if (!isset($this->settings['apiKey'])) {
             $message = 'Fastly api key is not available!';
             $this->logger->error($message);
             throw new RuntimeException($message);
         }
-        $this->adapter = $objectManager->get(GuzzleAdapter::class, $this->settings['apiKey']);
-        $this->fastly = $objectManager->get(Fastly::class, $this->adapter);
+        $adapter = $objectManager->get(GuzzleAdapter::class, $this->settings['apiKey']);
+        $this->injectFastly($objectManager->get(Fastly::class, $adapter));
+    }
+
+    public function setSettings(array $settings)
+    {
+        $this->settings = $settings;
+    }
+
+    public function injectFastly(FastlyInterface $fastly)
+    {
+        $this->fastly = $fastly;
     }
 
     /**

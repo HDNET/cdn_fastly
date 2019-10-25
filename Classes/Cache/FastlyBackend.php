@@ -19,7 +19,12 @@ class FastlyBackend extends NullBackend
     public function initializeObject(): void
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->fastlyService = $objectManager->get(FastlyService::class);
+        $this->injectFastlyService($objectManager->get(FastlyService::class));
+    }
+
+    public function injectFastlyService(FastlyService $fastlyService)
+    {
+        $this->fastlyService = $fastlyService;
     }
 
     public function flush(): void
