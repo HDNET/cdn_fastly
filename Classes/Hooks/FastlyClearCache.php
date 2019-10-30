@@ -43,10 +43,10 @@ class FastlyClearCache implements ClearCacheActionsHookInterface
 
         $cacheActions[] = [
             'id' => 'site',
-            'title' => 'LLL:EXT:site/Resources/Private/Language/locallang.xlf:cache.title',
-            'description' => 'LLL:EXT:site/Resources/Private/Language/locallang.xlf:cache.description',
+            'title' => 'LLL:EXT:cdn_fastly/Resources/Private/Language/locallang.xlf:cache.title',
+            'description' => 'LLL:EXT:cdn_fastly/Resources/Private/Language/locallang.xlf:cache.description',
             'href' => $route,
-            'iconIdentifier' => 'extension-site-fastly-clearcache',
+            'iconIdentifier' => 'extension-cdn_fastly-clearcache',
         ];
 
         $optionValues[] = 'fastly';

@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2014-06-02T11:47:10Z" product-name="frontend_login">
-		<header/>
+	<file source-language="en" datatype="plaintext" original="messages" date="2019-30-10T15:54:23Z">
+		<header>
+			<type>database</type>
+			<authorName>Pavel</authorName>
+		</header>
 		<body>
-
-
+			<trans-unit id="cache.title">
+				<source>Fastly Clear Cache</source>
+			</trans-unit>
+			<trans-unit id="cache.description">
+				<source>Flush all fastly related caches.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
