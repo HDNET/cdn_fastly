@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace Pavel\CdnFastly\Hooks;
+namespace HDNET\CdnFastly\Hooks;
 
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -17,8 +17,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Clear Cache hook for the Backend.
- *
- * @hook TYPO3_CONF_VARS|SC_OPTIONS|additionalBackendItems|cacheActions
  */
 class FastlyClearCache implements ClearCacheActionsHookInterface
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Pavel\CdnFastly\Cache;
+namespace HDNET\CdnFastly\Cache;
 
-use Pavel\CdnFastly\Service\FastlyService;
+use HDNET\CdnFastly\Service\FastlyService;
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;

@@ -16,12 +16,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Pavel\\CdnFastly\\": "Classes"
+			"HDNET\\CdnFastly\\": "Classes"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Pavel\\CdnFastly\\Tests\\": "Tests"
+			"HDNET\\CdnFastly\\Tests\\": "Tests"
 		}
 	},
 	"config": {

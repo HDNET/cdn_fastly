@@ -2,17 +2,24 @@
 
 defined('TYPO3_MODE') || die();
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = \Pavel\CdnFastly\Hooks\FastlyClearCache::class . '->FastlyClearCache';
+$boot = function () {
 
-$registry->registerIcon('extension-cdn_fastly-clearcache', \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class, [
-    'source' => 'EXT:cdn_fastly/Resources/Public/Icons/Cache/FastlyClearCache.png',
-]);
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = \HDNET\CdnFastly\Hooks\FastlyClearCache::class;
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] = [
-    'backend' => Pavel\CdnFastly\Cache\FastlyBackend::class,
-    'groups' => [
-        'fastly',
-        'pages',
-        'news',
-    ],
-];
+    $registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+    $registry->registerIcon('extension-cdn_fastly-clearcache', \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class, [
+        'source' => 'EXT:cdn_fastly/Resources/Public/Icons/Cache/FastlyClearCache.png',
+    ]);
+
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] = [
+        'backend' => HDNET\CdnFastly\Cache\FastlyBackend::class,
+        'groups' => [
+            'fastly',
+            'pages',
+            'news',
+        ],
+    ];
+};
+
+$boot();
+unset($boot);

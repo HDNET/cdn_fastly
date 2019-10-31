@@ -2,25 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Pavel\CdnFastly\Service;
+namespace HDNET\CdnFastly\Service;
 
 use Fastly\Adapter\Guzzle\GuzzleAdapter;
 use Fastly\Fastly;
 use Fastly\FastlyInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use RuntimeException;
 use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-class FastlyService implements SingletonInterface, LoggerAwareInterface
+class FastlyService extends AbstractService
 {
-    use LoggerAwareTrait;
 
     /**
      * @var FastlyInterface
@@ -39,7 +35,11 @@ class FastlyService implements SingletonInterface, LoggerAwareInterface
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $configurationManager = $objectManager->get(ConfigurationManager::class);
-        $this->setSettings($configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_site.']['settings.']['fastly.'] ?? []);
+
+        // Umstellen auf Extension Konfiguration @todo???
+        // OnfigurationService -> Zugriff auf Extension Konfiguration
+
+        $this->setSettings($configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_site.']['settings.']['fastly.'] ?? []); // Check site !!!!! @todo
         if (!isset($this->settings['apiKey'])) {
             $message = 'Fastly api key is not available!';
             $this->logger->error($message);

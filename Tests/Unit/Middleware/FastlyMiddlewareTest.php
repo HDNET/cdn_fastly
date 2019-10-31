@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Pavel\CdnFastly\Tests\Unit\Middleware;
+namespace HDNET\CdnFastly\Tests\Unit\Middleware;
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use Pavel\CdnFastly\Middleware\FastlyMiddleware;
+use HDNET\CdnFastly\Cache\FastlyBackend;
+use HDNET\CdnFastly\Tests\Unit\AbstractTest;
+use HDNET\CdnFastly\Middleware\FastlyMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -13,8 +14,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
 
-class FastlyMiddlewareTest extends UnitTestCase
+class FastlyMiddlewareTest extends AbstractTest
 {
+
+    public function testIsLoadable(){
+        $object = new FastlyMiddleware();
+        $this->assertTrue(is_object($object), 'Object should be creatable');
+    }
     public function test_is_response_a_ResponseInterface()
     {
         $middleware = new FastlyMiddleware();
