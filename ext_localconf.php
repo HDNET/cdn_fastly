@@ -4,7 +4,7 @@ defined('TYPO3_MODE') || die();
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = \Pavel\CdnFastly\Hooks\FastlyClearCache::class . '->FastlyClearCache';
 
-$registry->registerIcon('extension-fastly-clearcache', \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class, [
+$registry->registerIcon('extension-cdn_fastly-clearcache', \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class, [
     'source' => 'EXT:cdn_fastly/Resources/Public/Icons/Cache/FastlyClearCache.png',
 ]);
 
