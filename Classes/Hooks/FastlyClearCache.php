@@ -40,7 +40,7 @@ class FastlyClearCache implements ClearCacheActionsHookInterface
         }
 
         $cacheActions[] = [
-            'id' => 'site',
+            'id' => 'cdn_fastly',
             'title' => 'LLL:EXT:cdn_fastly/Resources/Private/Language/locallang.xlf:cache.title',
             'description' => 'LLL:EXT:cdn_fastly/Resources/Private/Language/locallang.xlf:cache.description',
             'href' => $route,

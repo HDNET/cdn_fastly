@@ -37,7 +37,7 @@ class FastlyService extends AbstractService
         $configurationManager = $objectManager->get(ConfigurationManager::class);
 
         // Umstellen auf Extension Konfiguration @todo???
-        // OnfigurationService -> Zugriff auf Extension Konfiguration
+        // ConfigurationService -> Zugriff auf Extension Konfiguration
 
         $this->setSettings($configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_site.']['settings.']['fastly.'] ?? []); // Check site !!!!! @todo
         if (!isset($this->settings['apiKey'])) {
