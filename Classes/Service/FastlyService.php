@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace HDNET\CdnFastly\Service;
 
 use Fastly\Adapter\Guzzle\GuzzleAdapter;
-use Fastly\Fastly;
 use Fastly\FastlyInterface;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;

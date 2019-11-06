@@ -32,7 +32,6 @@ class ConfigurationService implements ConfigurationServiceInterface
     protected function validArrayProperty(array $config, string $property)
     {
         if (!isset($config[$property]) || !is_string($config[$property]) || empty($config[$property])) {
-            #$this->logger->error($message);
             throw new RuntimeException('No or invalid property: ' . $property);
         }
     }
