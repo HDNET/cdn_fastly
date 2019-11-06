@@ -2,7 +2,13 @@
 
 defined('TYPO3_MODE') || die();
 
+
 $boot = function () {
+
+
+    $objectManager = new \TYPO3\CMS\Extbase\Object\ObjectManager();
+    $container = $objectManager->get(\TYPO3\CMS\Extbase\Object\Container\Container::class);
+    $container->registerImplementation(\Fastly\FastlyInterface::class, \Fastly\Fastly::class);
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = \HDNET\CdnFastly\Hooks\FastlyClearCache::class;
 
