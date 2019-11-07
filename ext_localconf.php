@@ -3,10 +3,9 @@
 defined('TYPO3_MODE') || die();
 
 
-$boot = function () {
+$boot = function (\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager) {
 
 
-    $objectManager = new \TYPO3\CMS\Extbase\Object\ObjectManager();
     $container = $objectManager->get(\TYPO3\CMS\Extbase\Object\Container\Container::class);
     $container->registerImplementation(\Fastly\FastlyInterface::class, \Fastly\Fastly::class);
 
@@ -27,5 +26,5 @@ $boot = function () {
     ];
 };
 
-$boot();
+$boot(new \TYPO3\CMS\Extbase\Object\ObjectManager());
 unset($boot);
