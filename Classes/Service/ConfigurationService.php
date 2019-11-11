@@ -44,7 +44,7 @@ class ConfigurationService implements ConfigurationServiceInterface
         if ($foundConfig === null) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             $configurationManager = $objectManager->get(ConfigurationManager::class);
-            $foundConfig = (array)($configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_site.']['settings.']['fastly.'] ?? []);
+            $foundConfig = (array)($configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_CdnFastly.']['settings.']['fastly.'] ?? []);
         }
 
         return $foundConfig;

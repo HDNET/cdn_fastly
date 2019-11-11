@@ -11,6 +11,11 @@ $boot = function (\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManage
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = \HDNET\CdnFastly\Hooks\FastlyClearCache::class;
 
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['CdnFastly::clearCache'] = [
+        'callbackMethod' => \HDNET\CdnFastly\Hooks\FastlyClearCache::class . '->clear',
+        'csrfTokenCheck' => true
+    ];
+
     $registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
     $registry->registerIcon('extension-cdn_fastly-clearcache', \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class, [
         'source' => 'EXT:cdn_fastly/Resources/Public/Icons/Cache/FastlyClearCache.png',
