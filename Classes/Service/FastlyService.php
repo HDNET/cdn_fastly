@@ -39,10 +39,7 @@ class FastlyService extends AbstractService
         $this->fastly = $objectManager->get(FastlyInterface::class, $adapter);
     }
 
-    /**
-     * @param $key
-     */
-    public function purgeKey($key): ResponseInterface
+    public function purgeKey(string $key): ResponseInterface
     {
         try {
             $response = $this->fastly->purgeKey($this->configuration->getServiceId(), $key);
@@ -57,10 +54,7 @@ class FastlyService extends AbstractService
         return $response;
     }
 
-    /**
-     * @param array $options
-     */
-    public function purgeAll($options = []): ResponseInterface
+    public function purgeAll(array $options = []): ResponseInterface
     {
         try {
             $response = $this->fastly->purgeAll($this->configuration->getServiceId(), $options);

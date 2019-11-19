@@ -10,6 +10,7 @@ $boot = function (\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManage
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = \HDNET\CdnFastly\Hooks\FastlyClearCache::class;
 
+    // @todo needed?!?!
     $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['CdnFastly::clearCache'] = [
         'callbackMethod' => \HDNET\CdnFastly\Hooks\FastlyClearCache::class . '->clear',
         'csrfTokenCheck' => true
