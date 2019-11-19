@@ -1,4 +1,4 @@
-plugin.tx_cdn_fastly {
+plugin.tx_cdnfastly {
   settings {
     # cat=site/language/120; type=string; label=Api key for fastly
     apiKey =
