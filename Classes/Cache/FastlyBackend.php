@@ -18,8 +18,12 @@ class FastlyBackend extends NullBackend
 
     public function initializeObject(): void
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->injectFastlyService($objectManager->get(FastlyService::class));
+        try {
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $this->injectFastlyService($objectManager->get(FastlyService::class));
+        } catch (\Exception $exception) {
+            // @todo logging
+        }
     }
 
     public function injectFastlyService(FastlyService $fastlyService)
@@ -29,6 +33,9 @@ class FastlyBackend extends NullBackend
 
     public function flush(): void
     {
+        if (null === $this->fastlyService) {
+            throw new \Exception('Fasty service was not build', 123678);
+        }
         $this->fastlyService->purgeAll();
     }
 
@@ -37,6 +44,9 @@ class FastlyBackend extends NullBackend
      */
     public function flushByTag($tag)
     {
+        if (null === $this->fastlyService) {
+            throw new \Exception('Fasty service was not build', 123678);
+        }
         $this->fastlyService->purgeKey((string) $tag);
     }
 
