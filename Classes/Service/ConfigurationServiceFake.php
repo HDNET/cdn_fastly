@@ -1,10 +1,8 @@
 <?php
-/**
- *
- */
+
+declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Service;
-
 
 class ConfigurationServiceFake extends ConfigurationService
 {
@@ -16,4 +14,4 @@ class ConfigurationServiceFake extends ConfigurationService
             'serviceId' => 'valid',
         ];
     }
-};
+}

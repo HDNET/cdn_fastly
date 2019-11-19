@@ -14,7 +14,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class FastlyService extends AbstractService
 {
-
     /**
      * @var FastlyInterface
      */
@@ -25,8 +24,8 @@ class FastlyService extends AbstractService
      */
     protected $configuration;
 
-
-    public function injectConfigurationService(ConfigurationServiceInterface $configurationService) {
+    public function injectConfigurationService(ConfigurationServiceInterface $configurationService)
+    {
         $this->configuration = $configurationService;
     }
 
@@ -42,8 +41,6 @@ class FastlyService extends AbstractService
 
     /**
      * @param $key
-     *
-     * @return ResponseInterface
      */
     public function purgeKey($key): ResponseInterface
     {
@@ -62,8 +59,6 @@ class FastlyService extends AbstractService
 
     /**
      * @param array $options
-     *
-     * @return ResponseInterface
      */
     public function purgeAll($options = []): ResponseInterface
     {

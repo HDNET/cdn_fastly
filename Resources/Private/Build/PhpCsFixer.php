@@ -1,0 +1,9 @@
+<?php
+/**
+ *
+ */
+
+class PhpCsFixer
+{
+
+}

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use HDNET\CdnFastly\Hooks\FastlyClearCache;
 
 return [

@@ -26,11 +26,6 @@ class FastlyMiddleware implements MiddlewareInterface
      * Page (No Fastly) | PASS    | PASS
      * News             | HIT     | HIT
      * PaidNews         | PASS    | HIT (Paywall Version)
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     *
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -58,6 +53,7 @@ class FastlyMiddleware implements MiddlewareInterface
     {
         // We don't need extbase here, so no ObjectManager, yet.
         $environmentService = GeneralUtility::makeInstance(EnvironmentService::class);
+
         return $environmentService->isEnvironmentInFrontendMode();
     }
 
@@ -72,6 +68,7 @@ class FastlyMiddleware implements MiddlewareInterface
             $cacheTags = \implode(' ', \array_unique($GLOBALS['TSFE']->getPageCacheTags()));
             $response = $response->withHeader('Surrogate-Key', $cacheTags);
         }
+
         return $response;
     }
 
@@ -93,7 +90,7 @@ class FastlyMiddleware implements MiddlewareInterface
         ];
 
         $cacheControlHeaderValue = $response->getHeader('Cache-Control')[0];
-        if (strpos($cacheControlHeaderValue, 'private') !== false) {
+        if (false !== \mb_strpos($cacheControlHeaderValue, 'private')) {
             return $response;
         }
 
