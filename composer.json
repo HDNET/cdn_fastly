@@ -10,9 +10,9 @@
 	"require": {
 		"php": ">=7.2.0",
 		"fastly/fastly": "^0.3",
-		"typo3/cms-core": "^8.7||^9.5||dev-master",
-		"typo3/cms-backend": "^8.7||^9.5||dev-master",
-		"typo3/cms-extbase": "^8.7||^9.5||dev-master"
+		"typo3/cms-core": "^9.5||dev-master",
+		"typo3/cms-backend": "^9.5||dev-master",
+		"typo3/cms-extbase": "^9.5||dev-master"
 	},
 	"autoload": {
 		"psr-4": {
@@ -36,11 +36,19 @@
 		}
 	},
 	"require-dev": {
-		"nimut/testing-framework": "^4.1"
+		"nimut/testing-framework": "^4.1",
+		"friendsofphp/php-cs-fixer": "^2.16"
 	},
 	"scripts": {
 		"test": [
 			"phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit"
+		],
+		"code": [
+			"@tool:php-cs-fixer",
+			"@tool:psalm"
+		],
+		"tool:php-cs-fixer": [
+			"php-cs-fixer fix --config Resources/Private/Build/PhpCsFixer.php --cache-file var/php_cs.cache"
 		]
 	}
 }

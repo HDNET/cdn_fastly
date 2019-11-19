@@ -5,7 +5,6 @@ defined('TYPO3_MODE') || die();
 
 $boot = function (\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager) {
 
-
     $container = $objectManager->get(\TYPO3\CMS\Extbase\Object\Container\Container::class);
     $container->registerImplementation(\Fastly\FastlyInterface::class, \Fastly\Fastly::class);
 
