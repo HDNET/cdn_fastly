@@ -12,6 +12,9 @@
 			<trans-unit id="cache.description">
 				<source>Flush all fastly related caches.</source>
 			</trans-unit>
+			<trans-unit id="pages.fastly">
+				<source>Fastly</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

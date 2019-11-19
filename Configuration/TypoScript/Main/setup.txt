@@ -1,0 +1,8 @@
+plugin.tx_cdn_fastly{
+  settings {
+    fastly {
+      apiKey = {$plugin.tx_cdn_fastly.settings.fastly.apiKey}
+      serviceId = {$plugin.tx_cdn_fastly.settings.fastly.serviceId}
+    }
+  }
+}

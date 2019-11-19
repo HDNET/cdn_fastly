@@ -37,12 +37,9 @@ class FastlyBackend extends NullBackend
      */
     public function flushByTag($tag)
     {
-        $this->fastlyService->purgeKey($tag);
+        $this->fastlyService->purgeKey((string) $tag);
     }
 
-    /**
-     * @param array $tags
-     */
     public function flushByTags(array $tags)
     {
         foreach ($tags as $tag) {

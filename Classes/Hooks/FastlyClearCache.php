@@ -51,9 +51,9 @@ class FastlyClearCache implements ClearCacheActionsHookInterface
     }
 
     /**
-     * @return HtmlResponse|void
      * @throws NoSuchCacheGroupException
      *
+     * @return HtmlResponse|void
      */
     public function clear()
     {
@@ -65,8 +65,6 @@ class FastlyClearCache implements ClearCacheActionsHookInterface
 
     /**
      * Get Ajax URI.
-     *
-     * @return string
      */
     protected function getAjaxUri(): string
     {
@@ -79,6 +77,6 @@ class FastlyClearCache implements ClearCacheActionsHookInterface
             return '';
         }
 
-        return (string)$uri;
+        return (string) $uri;
     }
 }
