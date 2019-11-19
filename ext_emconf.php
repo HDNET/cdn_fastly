@@ -1,17 +1,17 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'cdn_fastly',
-    'description' => 'cdn_fastly',
-    'category' => 'be',
+    'title' => 'CDN Fastly',
+    'description' => 'CDN fastly integration for TYPO3 to send the right headers',
     'author' => 'Pavel Musitschenko',
     'author_email' => 'pavel.musitschenko@hdnet.de',
-    'state' => 'stable',
+    'state' => 'beta',
     'clearCacheOnLoad' => true,
-    'version' => '',
+    'version' => '0.1.0',
     'constraints' => [
-        'depends' => [],
-        'conflicts' => [],
-        'suggests' => [],
+        'depends' => [
+            'php' => '7.2.0-0.0.0',
+            'typo3' => '9.5.0-0.0.0',
+        ],
     ],
 ];

@@ -1,2 +1,0 @@
-# cat=Configuration; type=string; label=API Key : API key for your TYPO3 installation
-fastly.apiKey =
