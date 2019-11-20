@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace HDNET\CdnFastly\Cache;
 
 use HDNET\CdnFastly\Service\FastlyService;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-class FastlyBackend extends NullBackend
+class FastlyBackend extends NullBackend implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var FastlyService
      */
@@ -22,7 +26,7 @@ class FastlyBackend extends NullBackend
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             $this->injectFastlyService($objectManager->get(FastlyService::class));
         } catch (\Exception $exception) {
-            // @todo logging
+            $this->logger->error('Fasty service was not build');
         }
     }
 
@@ -34,7 +38,9 @@ class FastlyBackend extends NullBackend
     public function flush(): void
     {
         if (null === $this->fastlyService) {
-            throw new \Exception('Fasty service was not build', 123678);
+            $this->logger->error('Fasty service was not build');
+
+            return;
         }
         $this->fastlyService->purgeAll();
     }
@@ -45,7 +51,9 @@ class FastlyBackend extends NullBackend
     public function flushByTag($tag)
     {
         if (null === $this->fastlyService) {
-            throw new \Exception('Fasty service was not build', 123678);
+            $this->logger->error('Fasty service was not build');
+
+            return;
         }
         $this->fastlyService->purgeKey((string) $tag);
     }
