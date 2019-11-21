@@ -1,6 +1,8 @@
 {
 	"name": "hdnet/cdn-fastly",
 	"type": "typo3-cms-extension",
+	"description": "Extension for handling TYPO3 requests for better CDN integration in fastly.",
+	"license": "GPL-2.0-or-later",
 	"authors": [
 		{
 			"name": "Pavel Musitschenko",
