@@ -4,7 +4,7 @@ Extension for handling TYPO3 requests for better CDN integration in fastly.
 
 ## Installation
 
-Run `composer require hdnet/cdn_fastly` in your project root.
+Run `composer require hdnet/cdn-fastly` in your project root.
 It will automatically install the extension and all its dependencies.
 
 ## Development
