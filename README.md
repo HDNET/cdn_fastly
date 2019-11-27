@@ -22,7 +22,6 @@ It will automatically install the extension and all its dependencies.
 - plugin.tx_cdnfastly.settings.fastly.apiKey
 - plugin.tx_cdnfastly.settings.fastly.serviceId
 
-
 ## Fastly
 
 * [Cache control tutorial Guide](https://docs.fastly.com/en/guides/cache-control-tutorial)
