@@ -1,9 +1,9 @@
 plugin.tx_cdnfastly {
   settings {
-    # cat=site/language/120; type=string; label=Api key for fastly
+    # cat=plugin.tx_cdnfastly/language/120; type=string; label=Api key for fastly
     apiKey =
 
-    # cat=site/language/120; type=string; label=Service id for fastly
+    # cat=plugin.tx_cdnfastly/language/120; type=string; label=Service id for fastly
     serviceId =
   }
 }
