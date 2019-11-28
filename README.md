@@ -15,12 +15,13 @@ It will automatically install the extension and all its dependencies.
 
 ## Configuration
 
-1. Install the extension ([Documentation](https://docs.typo3.org/m/typo3/reference-coreapi/8.7/en-us/ExtensionArchitecture/Installation/Index.html))
-2. Include the Static TypoScript of the extension
-3. Set the following TypoScript variables via constant editor
-
-- plugin.tx_cdnfastly.settings.fastly.apiKey
-- plugin.tx_cdnfastly.settings.fastly.serviceId
+- Install the extension ([Documentation](https://docs.typo3.org/m/typo3/reference-coreapi/8.7/en-us/ExtensionArchitecture/Installation/Index.html))
+- Include the static TypoScript of the extension
+    - traditional syntax: `<INCLUDE_TYPOSCRIPT: source="FILE:EXT:cdn_fastly/Configuration/TypoScript/Main/setup.txt">`
+    - modern syntax: `@import 'EXT:cdn_fastly/Configuration/TypoScript/Main/setup.txt`
+- Set the following TypoScript variables via constant editor in the TYPO3 Template module
+    - plugin.tx_cdnfastly.settings.fastly.apiKey
+    - plugin.tx_cdnfastly.settings.fastly.serviceId
 
 ## Fastly
 
