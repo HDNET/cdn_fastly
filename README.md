@@ -12,6 +12,8 @@ It will automatically install the extension and all its dependencies.
 * Clone repository `git clone git@github.com:HDNET/cdn_fastly.git`
 * Install dependencies `composer install`
 * Run tests `composer test`
+* Or use the Dockerfile instead e.g.
+  `docker run -u $(id -u):$(id -g) -v $(pwd):/app -w /app --rm -it $(docker build -q -f Resources/Private/Build/Dockerfile .) sh`
 
 ## Configuration
 

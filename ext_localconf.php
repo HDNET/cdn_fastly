@@ -21,14 +21,16 @@ $boot = function (\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManage
         'source' => 'EXT:cdn_fastly/Resources/Public/Icons/Cache/FastlyClearCache.png',
     ]);
 
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] = [
-        'backend' => HDNET\CdnFastly\Cache\FastlyBackend::class,
-        'groups' => [
-            'fastly',
-            'pages',
-            'news',
-        ],
-    ];
+    if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'])) {
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] = [
+            'backend' => HDNET\CdnFastly\Cache\FastlyBackend::class,
+            'groups' => [
+                'fastly',
+                'pages',
+                'news',
+            ],
+        ];
+    }
 };
 
 $boot(new \TYPO3\CMS\Extbase\Object\ObjectManager());
