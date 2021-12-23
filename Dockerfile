@@ -6,7 +6,7 @@ FROM base
 
 ENV COMPOSER_HOME=/tmp/.composer
 
-#WORKDIR /app
-#COPY . /app
+WORKDIR /app
+COPY . /app
 
-#RUN Resources/Private/Build/test.sh
+RUN Resources/Private/Build/test.sh
