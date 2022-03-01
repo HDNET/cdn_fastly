@@ -71,7 +71,7 @@ class FastlyClearCache implements ClearCacheActionsHookInterface
         /** @var UriBuilder $uriBuilder */
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         try {
-            $routeIdentifier = 'fastly';
+            $routeIdentifier = 'ajax_fastly';
             $uri = $uriBuilder->buildUriFromRoute($routeIdentifier);
         } catch (RouteNotFoundException $e) {
             return '';
