@@ -2,24 +2,13 @@
 
 defined('TYPO3_MODE') || die();
 
-
-$boot = function (\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager) {
-
-    $container = $objectManager->get(\TYPO3\CMS\Extbase\Object\Container\Container::class);
-    $container->registerImplementation(\Fastly\FastlyInterface::class, \Fastly\Fastly::class);
-
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = \HDNET\CdnFastly\Hooks\FastlyClearCache::class;
-
-    // @todo needed?!?!
-    $GLOBALS['TYPO3_CONF_VARS']['BE']['AJAX']['CdnFastly::clearCache'] = [
-        'callbackMethod' => \HDNET\CdnFastly\Hooks\FastlyClearCache::class . '->clear',
-        'csrfTokenCheck' => true
-    ];
-
-    $registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-    $registry->registerIcon('extension-cdn_fastly-clearcache', \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class, [
-        'source' => 'EXT:cdn_fastly/Resources/Public/Icons/Cache/FastlyClearCache.png',
-    ]);
+$boot = static function (
+    \TYPO3\CMS\Extbase\Object\Container\Container $container
+): void {
+    $container->registerImplementation(
+        \Fastly\FastlyInterface::class,
+        \Fastly\Fastly::class
+    );
 
     if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'])) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] = [
@@ -31,7 +20,20 @@ $boot = function (\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManage
             ],
         ];
     }
+
+    if (TYPO3_MODE === 'BE') {
+        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+        $iconRegistry->registerIcon(
+            'extension-cdn_fastly-clearcache',
+            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            ['source' => 'EXT:cdn_fastly/Resources/Public/Icons/Cache/FastlyClearCache.png']
+        );
+
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = \HDNET\CdnFastly\Hooks\FastlyClearCache::class;
+    }
 };
 
-$boot(new \TYPO3\CMS\Extbase\Object\ObjectManager());
+$boot(
+    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\Container\Container::class)
+);
 unset($boot);
