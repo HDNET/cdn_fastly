@@ -47,7 +47,7 @@ class ConfigurationService implements ConfigurationServiceInterface
 
         $checkEnvs = ['apiKey', 'serviceId'];
         foreach ($checkEnvs as $value) {
-            if (isset($foundConfig[$value]) && \is_string($foundConfig[$value]) && StringUtility::beginsWith($foundConfig[$value], 'env:')) {
+            if (isset($foundConfig[$value]) && \is_string($foundConfig[$value]) && \str_starts_with($foundConfig[$value], 'env:')) {
                 $foundConfig[$value] = \getenv(\mb_substr($foundConfig[$value], 4));
             }
         }

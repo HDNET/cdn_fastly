@@ -1,12 +1,14 @@
 <?php
 
+use PhpCsFixer\Finder;
+use PhpCsFixer\Config;
 $baseDir = dirname(dirname(dirname(__DIR__)));
 
-$finder = PhpCsFixer\Finder::create()
+$finder = Finder::create()
     ->in($baseDir . '/Classes')
     ->in($baseDir . '/Configuration');
 
-return PhpCsFixer\Config::create()
+return Config::create()
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,

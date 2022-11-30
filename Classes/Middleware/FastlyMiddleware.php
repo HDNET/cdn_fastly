@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Middleware;
 
+use TYPO3\CMS\Core\Http\ApplicationType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -54,7 +55,7 @@ class FastlyMiddleware implements MiddlewareInterface
         // We don't need extbase here, so no ObjectManager, yet.
         $environmentService = GeneralUtility::makeInstance(EnvironmentService::class);
 
-        return $environmentService->isEnvironmentInFrontendMode();
+        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
 
     protected function isFastlyDisabledOrNotConfigured(): bool
