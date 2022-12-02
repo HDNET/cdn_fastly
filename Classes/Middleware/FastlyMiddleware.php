@@ -53,7 +53,7 @@ class FastlyMiddleware implements MiddlewareInterface
     protected function isEnvironmentInFrontendMode(): bool
     {
         // We don't need extbase here, so no ObjectManager, yet.
-        $environmentService = GeneralUtility::makeInstance(EnvironmentService::class);
+        GeneralUtility::makeInstance(EnvironmentService::class);
 
         return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
@@ -65,7 +65,7 @@ class FastlyMiddleware implements MiddlewareInterface
 
     protected function appendSurrogateKeys(ResponseInterface $response): ResponseInterface
     {
-        if (\is_array($GLOBALS['TSFE']->getPageCacheTags()) && \count($GLOBALS['TSFE']->getPageCacheTags()) > 0) {
+        if (\is_array($GLOBALS['TSFE']->getPageCacheTags()) && $GLOBALS['TSFE']->getPageCacheTags() !== []) {
             $cacheTags = \implode(' ', \array_unique($GLOBALS['TSFE']->getPageCacheTags()));
             $response = $response->withHeader('Surrogate-Key', $cacheTags);
         }

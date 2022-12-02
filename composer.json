@@ -28,7 +28,11 @@
 	},
 	"config": {
 		"vendor-dir": ".Build/vendor",
-		"bin-dir": ".Build/bin"
+		"bin-dir": ".Build/bin",
+		"allow-plugins": {
+			"typo3/cms-composer-installers": true,
+			"typo3/class-alias-loader": true
+		}
 	},
 	"extra": {
 		"typo3/cms": {
@@ -38,8 +42,9 @@
 		}
 	},
 	"require-dev": {
-		"nimut/testing-framework": "^4.1",
-		"friendsofphp/php-cs-fixer": "^2.16"
+		"nimut/testing-framework": "^6.0",
+		"typo3/coding-standards": "^0.5.2",
+		"friendsofphp/php-cs-fixer": "^3.1"
 	},
 	"scripts": {
 		"test": [
