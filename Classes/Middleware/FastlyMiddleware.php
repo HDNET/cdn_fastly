@@ -36,11 +36,11 @@ class FastlyMiddleware implements MiddlewareInterface
             return $response;
         }
 
-        if ($this->isFastlyDisabledOrNotConfigured()) {
-            return $response
-                ->withHeader('Cache-Control', 'private')
-                ->withHeader('X-CDN', 'disabled');
-        }
+        // if ($this->isFastlyDisabledOrNotConfigured()) {
+        //     return $response
+        //         ->withHeader('Cache-Control', 'private')
+        //         ->withHeader('X-CDN', 'disabled');
+        // }
 
         $response = $this->appendSurrogateKeys($response);
         $response = $this->appendSurrogateControl($response);
@@ -58,10 +58,10 @@ class FastlyMiddleware implements MiddlewareInterface
         return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
 
-    protected function isFastlyDisabledOrNotConfigured(): bool
-    {
-        return !($GLOBALS['TSFE']->page['fastly'] ?? false);
-    }
+    // protected function isFastlyDisabledOrNotConfigured(): bool
+    // {
+    //     return !($GLOBALS['TSFE']->page['fastly'] ?? false);
+    // }
 
     protected function appendSurrogateKeys(ResponseInterface $response): ResponseInterface
     {
