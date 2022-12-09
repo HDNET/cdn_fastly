@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-ExtensionManagementUtility::addStaticFile('cdn_fastly', 'Configuration/TypoScript/Main/', 'CDN fastly');
+ExtensionManagementUtility::addStaticFile('cdn_fastly', 'Configuration/TypoScript/', 'CDN fastly');
 
 $GLOBALS['TCA']['pages']['columns']['fastly'] = [
     'exclude' => 1,

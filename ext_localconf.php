@@ -1,8 +1,6 @@
 <?php
 
 use TYPO3\CMS\Extbase\Object\Container\Container;
-use Fastly\FastlyInterface;
-use Fastly\Fastly;
 use HDNET\CdnFastly\Cache\FastlyBackend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Imaging\IconRegistry;
@@ -13,18 +11,13 @@ defined('TYPO3') || die();
 $boot = static function (
     Container $container
 ): void {
-    $container->registerImplementation(
-        FastlyInterface::class,
-        Fastly::class
-    );
 
     if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] ?? null)) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] = [
             'backend' => FastlyBackend::class,
             'groups' => [
                 'fastly',
-                'pages',
-                'news',
+                'pages'
             ],
         ];
     }

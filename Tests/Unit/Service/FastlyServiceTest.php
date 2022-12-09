@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Tests\Unit\Service;
 
-use Fastly\FastlyFake;
-use Fastly\FastlyInterface;
 use HDNET\CdnFastly\Service\ConfigurationServiceFake;
 use HDNET\CdnFastly\Service\ConfigurationServiceInterface;
 use HDNET\CdnFastly\Tests\Unit\AbstractTest;
@@ -30,9 +28,6 @@ class FastlyServiceTest extends AbstractTest
 
         $objectManager = new ObjectManager();
         $container = $objectManager->get(Container::class);
-
-        $container->registerImplementation(ConfigurationServiceInterface::class, ConfigurationServiceFake::class);
-        $container->registerImplementation(FastlyInterface::class, FastlyFake::class);
 
         $service = $objectManager->get(FastlyService::class);
 
