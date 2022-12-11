@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Middleware;
 
-use TYPO3\CMS\Core\Http\ApplicationType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
@@ -91,7 +91,7 @@ class FastlyMiddleware implements MiddlewareInterface
         ];
 
         $cacheControlHeaderValue = $response->getHeader('Cache-Control')[0];
-        if (false !== \mb_strpos($cacheControlHeaderValue, 'private')) {
+        if (\mb_strpos($cacheControlHeaderValue, 'private') !== false) {
             return $response;
         }
 
