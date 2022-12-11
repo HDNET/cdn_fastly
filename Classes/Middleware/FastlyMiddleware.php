@@ -36,15 +36,14 @@ class FastlyMiddleware implements MiddlewareInterface
             return $response;
         }
 
-        // if ($this->isFastlyDisabledOrNotConfigured()) {
-        //     return $response
-        //         ->withHeader('Cache-Control', 'private')
-        //         ->withHeader('X-CDN', 'disabled');
-        // }
+        if ($this->isFastlyDisabledOrNotConfigured()) {
+            return $response
+                ->withHeader('Cache-Control', 'private')
+                ->withHeader('X-CDN', 'disabled');
+        }
 
         $response = $this->appendSurrogateKeys($response);
         $response = $this->appendSurrogateControl($response);
-        $response = $this->updateCacheControl($response);
         $response = $response->withHeader('X-CDN', 'enabled');
 
         return $response;
@@ -58,10 +57,10 @@ class FastlyMiddleware implements MiddlewareInterface
         return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
 
-    // protected function isFastlyDisabledOrNotConfigured(): bool
-    // {
-    //     return !($GLOBALS['TSFE']->page['fastly'] ?? false);
-    // }
+    protected function isFastlyDisabledOrNotConfigured(): bool
+    {
+        return !($GLOBALS['TSFE']->page['fastly'] ?? false);
+    }
 
     protected function appendSurrogateKeys(ResponseInterface $response): ResponseInterface
     {
@@ -69,25 +68,16 @@ class FastlyMiddleware implements MiddlewareInterface
             $cacheTags = \implode(' ', \array_unique($GLOBALS['TSFE']->getPageCacheTags()));
             $response = $response->withHeader('Surrogate-Key', $cacheTags);
         }
-
         return $response;
     }
 
     protected function appendSurrogateControl(ResponseInterface $response): ResponseInterface
     {
-        return $response->withHeader('Surrogate-Control', 'max-age=' . $GLOBALS['TSFE']->get_cache_timeout());
-    }
-
-    protected function updateCacheControl(ResponseInterface $response): ResponseInterface
-    {
-        if (!$response->hasHeader('Cache-Control')) {
-            return $response;
-        }
-
         $staleTimeout = 14400; // 4 hours
+        $staleIfErrorTimeout = 604800; // 168 hours
         $additions = [
             'stale-while-revalidate' => $staleTimeout,
-            'stale-if-error' => $staleTimeout,
+            'stale-if-error' => $staleIfErrorTimeout,
         ];
 
         $cacheControlHeaderValue = $response->getHeader('Cache-Control')[0];
@@ -95,11 +85,11 @@ class FastlyMiddleware implements MiddlewareInterface
             return $response;
         }
 
-        $cacheControlHeaderValue = 'max-age=10';
+        $cacheControlHeaderValue = 'max-age='.$GLOBALS['TSFE']->get_cache_timeout().', public';
         foreach ($additions as $key => $value) {
             $cacheControlHeaderValue .= ',' . $key . '=' . $value;
         }
 
-        return $response->withHeader('Cache-Control', $cacheControlHeaderValue);
+        return $response->withHeader('Surrogate-Control', $cacheControlHeaderValue);
     }
 }
