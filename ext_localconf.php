@@ -16,9 +16,7 @@ $boot = static function (
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] = [
             'backend' => FastlyBackend::class,
             'groups' => [
-                'fastly',
-                'news',
-                'pages',
+                'fastly'
             ],
         ];
     }

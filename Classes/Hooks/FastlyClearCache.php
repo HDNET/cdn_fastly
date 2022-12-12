@@ -30,7 +30,7 @@ class FastlyClearCache implements ClearCacheActionsHookInterface
     {
         $isAdmin = $GLOBALS['BE_USER']->isAdmin();
         $userTsConfig = $GLOBALS['BE_USER']->getTSConfig();
-        if (!($isAdmin || $userTsConfig['options.']['clearCache.']['fastly'] ?? false)) {
+        if (!($isAdmin || ( ($userTsConfig['options.']['clearCache.'] ?? false) &&  ($userTsConfig['options.']['clearCache.']['fastly'] ?? false)))) {
             return;
         }
 
