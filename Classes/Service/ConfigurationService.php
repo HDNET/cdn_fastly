@@ -26,7 +26,11 @@ class ConfigurationService implements ConfigurationServiceInterface
 
         return $config['serviceId'];
     }
-
+    public function getSoftpurge(): bool
+    {
+        $config = $this->findConfiguration();
+        return ((bool)$config['softpurge'])? true : false;
+    }
     /**
      * @param array<mixed> $config
      * @param string $property

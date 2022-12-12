@@ -93,17 +93,8 @@ class FastlyService extends AbstractService
      */
     protected function getClient()
     {
-        return $this->initializeClient($this->configuration->getServiceId(), $this->configuration->getApiKey());
-    }
-
-    /**
-     * @param string $serviceId
-     * @param string $apiToken
-     *
-     * @return Client
-     */
-    protected function initializeClient(string $serviceId, string $apiToken)
-    {
+        $serviceId = $this->configuration->getServiceId();
+        $apiToken = $this->configuration->getApiKey();
         $httpOptions = $GLOBALS['TYPO3_CONF_VARS']['HTTP'];
         if (isset($httpOptions['handler'])) {
             if (is_array($httpOptions['handler'] && !empty($httpOptions['handler']))) {
@@ -117,9 +108,12 @@ class FastlyService extends AbstractService
             }
         }
         $httpOptions['verify'] = filter_var($httpOptions['verify'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $httpOptions['verify'];
+        $httpOptions['timeout'] = 10.0; // 10 seconds
         $httpOptions['base_uri'] = str_replace('{serviceId}', $serviceId, $this->baseUrl);
         $httpOptions['headers']['Fastly-Key'] = $apiToken;
-        $httpOptions['headers']['Fastly-Soft-Purge'] = 1;
+        if($this->configuration->getSoftpurge()){
+            $httpOptions['headers']['Fastly-Soft-Purge'] = 1;
+        }
 
         return new Client($httpOptions);
     }

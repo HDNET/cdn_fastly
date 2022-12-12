@@ -17,6 +17,7 @@ $boot = static function (
             'backend' => FastlyBackend::class,
             'groups' => [
                 'fastly',
+                'news',
                 'pages',
             ],
         ];
