@@ -8,5 +8,4 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 abstract class AbstractTest extends UnitTestCase
 {
-
 }

@@ -9,33 +9,33 @@ It will automatically install the extension and all its dependencies.
 
 ## Development
 
-* Clone repository `git clone git@github.com:HDNET/cdn_fastly.git`
-* Install dependencies `composer install`
-* Run tests `composer test`
-* Or use the Dockerfile instead e.g.
+- Clone repository `git clone git@github.com:HDNET/cdn_fastly.git`
+- Install dependencies `composer install`
+- Run tests `composer test`
+- Or use the Dockerfile instead e.g.
   `docker run -u $(id -u):$(id -g) -v $(pwd):/app -w /app --rm -it $(docker build -q -f Resources/Private/Build/Dockerfile .) sh`
 
 ## Configuration
 
 - Install the extension ([Documentation](https://docs.typo3.org/m/typo3/reference-coreapi/8.7/en-us/ExtensionArchitecture/Installation/Index.html))
 - Include the static TypoScript of the extension
-    - traditional syntax: `<INCLUDE_TYPOSCRIPT: source="FILE:EXT:cdn_fastly/Configuration/TypoScript/Main/setup.txt">`
-    - modern syntax: `@import 'EXT:cdn_fastly/Configuration/TypoScript/Main/setup.txt`
+  - traditional syntax: `<INCLUDE_TYPOSCRIPT: source="FILE:EXT:cdn_fastly/Configuration/TypoScript/setup.typoscript">`
+  - modern syntax: `@import 'EXT:cdn_fastly/Configuration/TypoScript/setup.typoscript`
 - Set the following TypoScript variables via constant editor in the TYPO3 Template module
-    - plugin.tx_cdnfastly.settings.fastly.apiKey
-    - plugin.tx_cdnfastly.settings.fastly.serviceId
+  - plugin.tx_cdnfastly.settings.fastly.apiKey
+  - plugin.tx_cdnfastly.settings.fastly.serviceId
 
 ## Fastly
 
-* [Cache control tutorial Guide](https://docs.fastly.com/en/guides/cache-control-tutorial)
-* [How caching and CNDs work](https://docs.fastly.com/en/guides/how-caching-and-cdns-work)
+- [Cache control tutorial Guide](https://docs.fastly.com/en/guides/cache-control-tutorial)
+- [How caching and CNDs work](https://docs.fastly.com/en/guides/how-caching-and-cdns-work)
 
-## TYPO3 
+## TYPO3
 
-* [Caching framework](https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/CachingFramework/Index.html)
-* [Testing framework](https://github.com/TYPO3/testing-framework)
+- [Caching framework](https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/CachingFramework/Index.html)
+- [Testing framework](https://github.com/TYPO3/testing-framework)
 
 ## PSR Information
 
-* [PSR-7 HTTP Message Interface](https://www.php-fig.org/psr/psr-7/)
-* [PSR-15 HTTP Middleware](https://www.php-fig.org/psr/psr-15/)
+- [PSR-7 HTTP Message Interface](https://www.php-fig.org/psr/psr-7/)
+- [PSR-15 HTTP Middleware](https://www.php-fig.org/psr/psr-15/)

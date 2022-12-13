@@ -14,8 +14,8 @@ jobs:
         id: setup-php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4.23'
-          tools: composer:1.10.24
+          php-version: '8.1'
+          tools: composer:2
 
       - name: Get composer cache directory
         id: composer-cache

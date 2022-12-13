@@ -23,14 +23,14 @@ class FastlyClearCache implements ClearCacheActionsHookInterface
     /**
      * Modifies CacheMenuItems array.
      *
-     * @param array $cacheActions Array of CacheMenuItems
-     * @param array $optionValues Array of AccessConfigurations-identifiers (typically used by userTS with options.clearCache.identifier)
+     * @param array<mixed> $cacheActions Array of CacheMenuItems
+     * @param array<mixed> $optionValues Array of AccessConfigurations-identifiers (typically used by userTS with options.clearCache.identifier)
      */
     public function manipulateCacheActions(&$cacheActions, &$optionValues): void
     {
         $isAdmin = $GLOBALS['BE_USER']->isAdmin();
         $userTsConfig = $GLOBALS['BE_USER']->getTSConfig();
-        if (!($isAdmin || $userTsConfig['options.']['clearCache.']['fastly'] ?? false)) {
+        if (!($isAdmin || ( ($userTsConfig['options.']['clearCache.'] ?? false) &&  ($userTsConfig['options.']['clearCache.']['fastly'] ?? false)))) {
             return;
         }
 
@@ -77,6 +77,6 @@ class FastlyClearCache implements ClearCacheActionsHookInterface
             return '';
         }
 
-        return (string) $uri;
+        return (string)$uri;
     }
 }

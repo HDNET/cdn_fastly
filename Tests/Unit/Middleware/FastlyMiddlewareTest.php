@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Tests\Unit\Middleware;
 
-use HDNET\CdnFastly\Cache\FastlyBackend;
-use HDNET\CdnFastly\Tests\Unit\AbstractTest;
 use HDNET\CdnFastly\Middleware\FastlyMiddleware;
+use HDNET\CdnFastly\Tests\Unit\AbstractTest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -13,13 +13,12 @@ use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
-
 class FastlyMiddlewareTest extends AbstractTest
 {
-
-    public function testIsLoadable(){
+    public function testIsLoadable()
+    {
         $object = new FastlyMiddleware();
-        $this->assertTrue(is_object($object), 'Object should be creatable');
+        self::assertTrue(is_object($object), 'Object should be creatable');
     }
     public function test_is_response_a_ResponseInterface()
     {
@@ -28,7 +27,7 @@ class FastlyMiddlewareTest extends AbstractTest
         $handler = $this->getMockBuilder(RequestHandlerInterface::class)->getMock();
         $response = $middleware->process($request, $handler);
 
-        $this->assertInstanceOf(ResponseInterface::class, $response);
+        self::assertInstanceOf(ResponseInterface::class, $response);
     }
 
     public function test_get_XCDN_Header_if_Fastly_is_disabled()
@@ -40,10 +39,9 @@ class FastlyMiddlewareTest extends AbstractTest
         $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->setMethods(['isEnvironmentInFrontendMode'])->getMock();
         $environmentServiceMock->method('isEnvironmentInFrontendMode')->willReturn(true);
 
-        $GLOBALS['TSFE'] = new class
-        {
+        $GLOBALS['TSFE'] = new class() {
             public $page = [
-                'fastly' => false
+                'fastly' => false,
             ];
 
             public function getPageCacheTags()
@@ -61,8 +59,8 @@ class FastlyMiddlewareTest extends AbstractTest
 
         $response = $middleware->process($request, $handler);
 
-        $this->assertTrue($response->hasHeader('X-CDN'));
-        $this->assertEquals('disabled', $response->getHeader('X-CDN')[0]);
+        self::assertTrue($response->hasHeader('X-CDN'));
+        self::assertEquals('disabled', $response->getHeader('X-CDN')[0]);
     }
 
     public function test_PageCacheKey()
@@ -76,10 +74,9 @@ class FastlyMiddlewareTest extends AbstractTest
         $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->setMethods(['isEnvironmentInFrontendMode'])->getMock();
         $environmentServiceMock->method('isEnvironmentInFrontendMode')->willReturn(true);
 
-        $GLOBALS['TSFE'] = new class
-        {
+        $GLOBALS['TSFE'] = new class() {
             public $page = [
-                'fastly' => true
+                'fastly' => true,
             ];
 
             public $testKeys = ['firstTestKey'];
@@ -99,20 +96,18 @@ class FastlyMiddlewareTest extends AbstractTest
 
         $response = $middleware->process($request, $handler);
 
-
-
-        $this->assertTrue($response->hasHeader('X-CDN'),'Expected Header "X-CDN"');
-        $this->assertTrue($response->hasHeader('Surrogate-Key'),'Expected Header "Surrogate-Key"');
-        $this->assertEquals('enabled', $response->getHeader('X-CDN')[0],'Expected Value "enabled" in Header "X-CDN"');
-        $this->assertEquals('firstTestKey', $response->getHeader('Surrogate-Key')[0],'Expected Value "firstTestKey" in Header "Surrogate-Key"');
+        self::assertTrue($response->hasHeader('X-CDN'), 'Expected Header "X-CDN"');
+        self::assertTrue($response->hasHeader('Surrogate-Key'), 'Expected Header "Surrogate-Key"');
+        self::assertEquals('enabled', $response->getHeader('X-CDN')[0], 'Expected Value "enabled" in Header "X-CDN"');
+        self::assertEquals('firstTestKey', $response->getHeader('Surrogate-Key')[0], 'Expected Value "firstTestKey" in Header "Surrogate-Key"');
 
         $GLOBALS['TSFE']->testKeys[] = 'secondTestKey';
         $response = $middleware->process($request, $handler);
-        $this->assertEquals('firstTestKey secondTestKey', $response->getHeader('Surrogate-Key')[0], 'Expected 2 tags seperated by " " ("firstTestKey secondTestKey")');
+        self::assertEquals('firstTestKey secondTestKey', $response->getHeader('Surrogate-Key')[0], 'Expected 2 tags seperated by " " ("firstTestKey secondTestKey")');
 
         $GLOBALS['TSFE']->testKeys = [];
         $response = $middleware->process($request, $handler);
-        $this->assertFalse($response->hasHeader('Surrogate-Key'), 'Expected no Headers since there are no tags (except Surrogate-Control and X-CDN');
-        $this->assertTrue($response->hasHeader('Surrogate-Control'), 'Expected Header "Surrogate-Control" with "max-age=1337"');
+        self::assertFalse($response->hasHeader('Surrogate-Key'), 'Expected no Headers since there are no tags (except Surrogate-Control and X-CDN');
+        self::assertTrue($response->hasHeader('Surrogate-Control'), 'Expected Header "Surrogate-Control" with "max-age=1337"');
     }
 }

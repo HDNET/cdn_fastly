@@ -1,5 +1,7 @@
 <?php
 
-defined('TYPO3_MODE') || die();
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('pages', 'EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_csh_pages.xlf');
+defined('TYPO3') || die();
+
+ExtensionManagementUtility::addLLrefForTCAdescr('pages', 'EXT:cdn_fastly/Resources/Private/Language/locallang_csh_pages.xlf');

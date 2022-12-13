@@ -6,7 +6,6 @@ namespace HDNET\CdnFastly\Service;
 
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -27,27 +26,38 @@ class ConfigurationService implements ConfigurationServiceInterface
 
         return $config['serviceId'];
     }
-
-    protected function validArrayProperty(array $config, string $property)
+    public function getSoftpurge(): bool
+    {
+        $config = $this->findConfiguration();
+        return ((bool)$config['softpurge'])? true : false;
+    }
+    /**
+     * @param array<mixed> $config
+     * @param string $property
+     */
+    protected function validArrayProperty(array $config, string $property): void
     {
         if (!isset($config[$property]) || !\is_string($config[$property]) || empty($config[$property])) {
             throw new RuntimeException('No or invalid property: ' . $property);
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     protected function findConfiguration(): array
     {
         static $foundConfig;
 
-        if (null === $foundConfig) {
+        if ($foundConfig === null) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             $configurationManager = $objectManager->get(ConfigurationManager::class);
-            $foundConfig = (array) ($configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_cdnfastly.']['settings.'] ?? []);
+            $foundConfig = (array)($configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_cdnfastly.']['settings.'] ?? []);
         }
 
         $checkEnvs = ['apiKey', 'serviceId'];
         foreach ($checkEnvs as $value) {
-            if (isset($foundConfig[$value]) && \is_string($foundConfig[$value]) && StringUtility::beginsWith($foundConfig[$value], 'env:')) {
+            if (isset($foundConfig[$value]) && \is_string($foundConfig[$value]) && \str_starts_with($foundConfig[$value], 'env:')) {
                 $foundConfig[$value] = \getenv(\mb_substr($foundConfig[$value], 4));
             }
         }

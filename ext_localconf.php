@@ -1,39 +1,39 @@
 <?php
 
-defined('TYPO3_MODE') || die();
+use HDNET\CdnFastly\Cache\FastlyBackend;
+use HDNET\CdnFastly\Hooks\FastlyClearCache;
+use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
+use TYPO3\CMS\Core\Imaging\IconRegistry;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Container\Container;
+
+defined('TYPO3') || die();
 
 $boot = static function (
-    \TYPO3\CMS\Extbase\Object\Container\Container $container
+    Container $container
 ): void {
-    $container->registerImplementation(
-        \Fastly\FastlyInterface::class,
-        \Fastly\Fastly::class
-    );
-
-    if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'])) {
+    if (empty($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] ?? null)) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['CdnFastly'] = [
-            'backend' => HDNET\CdnFastly\Cache\FastlyBackend::class,
+            'backend' => FastlyBackend::class,
             'groups' => [
-                'fastly',
-                'pages',
-                'news',
+                'fastly'
             ],
         ];
     }
 
     if (TYPO3_MODE === 'BE') {
-        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+        $iconRegistry = GeneralUtility::makeInstance(IconRegistry::class);
         $iconRegistry->registerIcon(
             'extension-cdn_fastly-clearcache',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+            BitmapIconProvider::class,
             ['source' => 'EXT:cdn_fastly/Resources/Public/Icons/Cache/FastlyClearCache.png']
         );
 
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = \HDNET\CdnFastly\Hooks\FastlyClearCache::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][] = FastlyClearCache::class;
     }
 };
 
 $boot(
-    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\Container\Container::class)
+    GeneralUtility::makeInstance(Container::class)
 );
 unset($boot);

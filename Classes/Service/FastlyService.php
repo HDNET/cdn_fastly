@@ -4,67 +4,117 @@ declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Service;
 
-use Fastly\Adapter\Guzzle\GuzzleAdapter;
-use Fastly\FastlyInterface;
-use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 
 class FastlyService extends AbstractService
 {
     /**
-     * @var FastlyInterface
+     * @var string
      */
-    protected $fastly;
+    protected $baseUrl = 'https://api.fastly.com/service/{serviceId}/';
 
     /**
      * @var ConfigurationServiceInterface
      */
     protected $configuration;
 
-    public function injectConfigurationService(ConfigurationServiceInterface $configurationService)
+    public function injectConfigurationService(ConfigurationServiceInterface $configurationService): void
     {
         $this->configuration = $configurationService;
     }
 
     /**
-     * @throws InvalidConfigurationTypeException
+     * Purge single tag from fastly
+     *
+     * @param string $key
      */
-    public function initializeObject(): void
-    {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $adapter = $objectManager->get(GuzzleAdapter::class, $this->configuration->getApiKey());
-        $this->fastly = $objectManager->get(FastlyInterface::class, $adapter);
-    }
-
-    public function purgeKey(string $key): ResponseInterface
+    public function purgeKey(string $key): void
     {
         try {
-            $response = $this->fastly->purgeKey($this->configuration->getServiceId(), $key);
-            $this->logger->debug(\sprintf('FASTLY PURGE KEY (%s): CODE %s', $key, $response->getStatusCode()), (array) $response);
+            $this->getClient()->request('POST', 'purge/' . $key);
+            if ($this->logger) {
+                $this->logger->debug(\sprintf('FASTLY PURGE KEY (%s)', $key));
+            }
         } catch (\Exception $exception) {
-            $message = 'Fastly service id is not available!';
-            $this->logger->error($message);
-
-            return new HtmlResponse('');
+            if ($this->logger) {
+                $message = 'Fastly service id is not available!';
+                $this->logger->error($message);
+            }
         }
-
-        return $response;
     }
 
-    public function purgeAll(array $options = []): ResponseInterface
+    /**
+     * Pruge multiple tags from CDN
+     *
+     * @param array<string> $keys
+     */
+    public function purgeKeys(array $keys): void
+    {
+        if (empty($keys)) {
+            return;
+        }
+        try {
+            $this->getClient()->request('POST', 'purge/', [
+                'headers' => [
+                    'Surrogate-Key' => implode(' ', $keys),
+                ],
+            ]);
+            if ($this->logger) {
+                $this->logger->debug(\sprintf('FASTLY PURGE KEYS (%s)', implode(' ', $keys)));
+            }
+        } catch (\Exception $exception) {
+            if ($this->logger) {
+                $message = 'Fastly service id is not available!';
+                $this->logger->error($message);
+            }
+        }
+    }
+
+    /**
+     * Purge all cached objects from Fastly
+     */
+    public function purgeAll(): void
     {
         try {
-            $response = $this->fastly->purgeAll($this->configuration->getServiceId(), $options);
-            $this->logger->notice(\sprintf('FASTLY PURGE ALL: CODE %s', $response->getStatusCode()), (array) $response);
+            $this->getClient()->post('purge_all');
+            if ($this->logger) {
+                $this->logger->notice(\sprintf('FASTLY PURGE ALL:'));
+            }
         } catch (\Exception $exception) {
-            $this->logger->error($exception->getMessage());
+            if ($this->logger) {
+                $this->logger->error($exception->getMessage());
+            }
+        }
+    }
 
-            return new HtmlResponse('');
+    /**
+     * @return Client
+     */
+    protected function getClient()
+    {
+        $serviceId = $this->configuration->getServiceId();
+        $apiToken = $this->configuration->getApiKey();
+        $httpOptions = $GLOBALS['TYPO3_CONF_VARS']['HTTP'];
+        if (isset($httpOptions['handler'])) {
+            if (is_array($httpOptions['handler'] && !empty($httpOptions['handler']))) {
+                $stack = HandlerStack::create();
+                foreach ($httpOptions['handler'] as $handler) {
+                    $stack->push($handler);
+                }
+                $httpOptions['handler'] = $stack;
+            } else {
+                unset($httpOptions['handler']);
+            }
+        }
+        $httpOptions['verify'] = filter_var($httpOptions['verify'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $httpOptions['verify'];
+        $httpOptions['timeout'] = 10.0; // 10 seconds
+        $httpOptions['base_uri'] = str_replace('{serviceId}', $serviceId, $this->baseUrl);
+        $httpOptions['headers']['Fastly-Key'] = $apiToken;
+        if($this->configuration->getSoftpurge()){
+            $httpOptions['headers']['Fastly-Soft-Purge'] = 1;
         }
 
-        return $response;
+        return new Client($httpOptions);
     }
 }

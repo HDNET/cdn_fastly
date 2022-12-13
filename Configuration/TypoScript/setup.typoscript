@@ -2,5 +2,6 @@ plugin.tx_cdnfastly{
   settings {
     apiKey = {$plugin.tx_cdnfastly.settings.apiKey}
     serviceId = {$plugin.tx_cdnfastly.settings.serviceId}
+    softpurge = {$plugin.tx_cdnfastly.settings.softpurge}
   }
 }
