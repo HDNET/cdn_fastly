@@ -9,4 +9,6 @@ interface ConfigurationServiceInterface
     public function getApiKey(): string;
 
     public function getServiceId(): string;
+
+    public function getSoftpurge(): bool;
 }

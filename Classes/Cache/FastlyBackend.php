@@ -26,20 +26,23 @@ class FastlyBackend extends NullBackend implements LoggerAwareInterface
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             $this->injectFastlyService($objectManager->get(FastlyService::class));
         } catch (\Exception $exception) {
-            $this->logger->error('Fasty service was not build');
+            if ($this->logger) {
+                $this->logger->error('Fasty service was not build');
+            }
         }
     }
 
-    public function injectFastlyService(FastlyService $fastlyService)
+    public function injectFastlyService(FastlyService $fastlyService): void
     {
         $this->fastlyService = $fastlyService;
     }
 
     public function flush(): void
     {
-        if (null === $this->fastlyService) {
-            $this->logger->error('Fasty service was not build');
-
+        if ($this->fastlyService === null) {
+            if ($this->logger) {
+                $this->logger->error('Fasty service was not build');
+            }
             return;
         }
         $this->fastlyService->purgeAll();
@@ -48,20 +51,25 @@ class FastlyBackend extends NullBackend implements LoggerAwareInterface
     /**
      * @param string $tag
      */
-    public function flushByTag($tag)
+    public function flushByTag($tag): void
     {
-        if (null === $this->fastlyService) {
-            $this->logger->error('Fasty service was not build');
-
+        if ($this->fastlyService === null) {
+            if ($this->logger) {
+                $this->logger->error('Fasty service was not build');
+            }
             return;
         }
-        $this->fastlyService->purgeKey((string) $tag);
+        $this->fastlyService->purgeKey((string)$tag);
     }
 
-    public function flushByTags(array $tags)
+    public function flushByTags(array $tags): void
     {
-        foreach ($tags as $tag) {
-            $this->flushByTag($tag);
+        if ($this->fastlyService === null) {
+            if ($this->logger) {
+                $this->logger->error('Fasty service was not build');
+            }
+            return;
         }
+        $this->fastlyService->purgeKeys($tags);
     }
 }
