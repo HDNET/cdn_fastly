@@ -4,48 +4,44 @@ declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Cache;
 
+use Exception;
 use HDNET\CdnFastly\Service\FastlyService;
+use Override;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class FastlyBackend extends NullBackend implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     /**
-     * @var FastlyService
+     * @var FastlyService|null
      */
-    protected $fastlyService;
+    protected ?FastlyService $fastlyService = null;
 
-    public function initializeObject(): void
+    protected function getFastlyService(): ?FastlyService
     {
-        try {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->injectFastlyService($objectManager->get(FastlyService::class));
-        } catch (\Exception $exception) {
-            if ($this->logger) {
-                $this->logger->error('Fasty service was not build');
+        if ($this->fastlyService === null) {
+            try {
+                $this->fastlyService = GeneralUtility::makeInstance(FastlyService::class);
+            } catch (Exception $e) {
+                if ($this->logger) {
+                    $this->logger->error('Fastly service was not built: ' . $e->getMessage());
+                }
             }
         }
-    }
-
-    public function injectFastlyService(FastlyService $fastlyService): void
-    {
-        $this->fastlyService = $fastlyService;
+        return $this->fastlyService;
     }
 
     public function flush(): void
     {
-        if ($this->fastlyService === null) {
-            if ($this->logger) {
-                $this->logger->error('Fasty service was not build');
-            }
+        $fastlyService = $this->getFastlyService();
+        if ($fastlyService === null) {
             return;
         }
-        $this->fastlyService->purgeAll();
+        $fastlyService->purgeAll();
     }
 
     /**
@@ -53,23 +49,20 @@ class FastlyBackend extends NullBackend implements LoggerAwareInterface
      */
     public function flushByTag($tag): void
     {
-        if ($this->fastlyService === null) {
-            if ($this->logger) {
-                $this->logger->error('Fasty service was not build');
-            }
+        $fastlyService = $this->getFastlyService();
+        if ($fastlyService === null) {
             return;
         }
-        $this->fastlyService->purgeKey((string)$tag);
+        $fastlyService->purgeKey((string)$tag);
     }
 
+    #[Override]
     public function flushByTags(array $tags): void
     {
-        if ($this->fastlyService === null) {
-            if ($this->logger) {
-                $this->logger->error('Fasty service was not build');
-            }
+        $fastlyService = $this->getFastlyService();
+        if ($fastlyService === null) {
             return;
         }
-        $this->fastlyService->purgeKeys($tags);
+        $fastlyService->purgeKeys($tags);
     }
 }

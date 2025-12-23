@@ -9,8 +9,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Service\EnvironmentService;
+use function array_unique;
+use function implode;
+use function is_array;
+use function mb_strpos;
 
 class FastlyMiddleware implements MiddlewareInterface
 {
@@ -51,21 +53,18 @@ class FastlyMiddleware implements MiddlewareInterface
 
     protected function isEnvironmentInFrontendMode(): bool
     {
-        // We don't need extbase here, so no ObjectManager, yet.
-        GeneralUtility::makeInstance(EnvironmentService::class);
-
         return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
 
     protected function isFastlyDisabledOrNotConfigured(): bool
     {
-        return !($GLOBALS['TSFE']->page['fastly'] ?? false);
+        return !($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.page.information')->getPageRecord()['fastly'] ?? false);
     }
 
     protected function appendSurrogateKeys(ResponseInterface $response): ResponseInterface
     {
-        if (\is_array($GLOBALS['TSFE']->getPageCacheTags()) && $GLOBALS['TSFE']->getPageCacheTags() !== []) {
-            $cacheTags = \implode(' ', \array_unique($GLOBALS['TSFE']->getPageCacheTags()));
+        if (is_array($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.cache.collector')->getCacheTags()) && $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.cache.collector')->getCacheTags() !== []) {
+            $cacheTags = implode(' ', array_unique($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.cache.collector')->getCacheTags()));
             $response = $response->withHeader('Surrogate-Key', $cacheTags);
         }
         return $response;
@@ -80,12 +79,16 @@ class FastlyMiddleware implements MiddlewareInterface
             'stale-if-error' => $staleIfErrorTimeout,
         ];
 
-        $cacheControlHeaderValue = $response->getHeader('Cache-Control')[0];
-        if (\mb_strpos($cacheControlHeaderValue, 'private') !== false) {
+        $cacheControlHeaderValue = $response->getHeader('Cache-Control')[0] ?? '';
+        if (mb_strpos($cacheControlHeaderValue, 'private') !== false) {
             return $response;
         }
 
-        $cacheControlHeaderValue = 'max-age='.$GLOBALS['TSFE']->get_cache_timeout().', public';
+        $cacheTimeout = 3600; // Standard: 1 Stunde
+        if (preg_match('/max-age=(\d+)/', $cacheControlHeaderValue, $matches)) {
+            $cacheTimeout = (int)$matches[1];
+        }
+        $cacheControlHeaderValue = 'max-age=' . $cacheTimeout . ', public';
         foreach ($additions as $key => $value) {
             $cacheControlHeaderValue .= ',' . $key . '=' . $value;
         }

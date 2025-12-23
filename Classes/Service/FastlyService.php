@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Service;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
+use function sprintf;
 
 class FastlyService extends AbstractService
 {
@@ -19,9 +21,9 @@ class FastlyService extends AbstractService
      */
     protected $configuration;
 
-    public function injectConfigurationService(ConfigurationServiceInterface $configurationService): void
+    public function __construct(ConfigurationServiceInterface $configuration)
     {
-        $this->configuration = $configurationService;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -34,9 +36,9 @@ class FastlyService extends AbstractService
         try {
             $this->getClient()->request('POST', 'purge/' . $key);
             if ($this->logger) {
-                $this->logger->debug(\sprintf('FASTLY PURGE KEY (%s)', $key));
+                $this->logger->debug(sprintf('FASTLY PURGE KEY (%s)', $key));
             }
-        } catch (\Exception $exception) {
+        } catch (Exception) {
             if ($this->logger) {
                 $message = 'Fastly service id is not available!';
                 $this->logger->error($message);
@@ -61,9 +63,9 @@ class FastlyService extends AbstractService
                 ],
             ]);
             if ($this->logger) {
-                $this->logger->debug(\sprintf('FASTLY PURGE KEYS (%s)', implode(' ', $keys)));
+                $this->logger->debug(sprintf('FASTLY PURGE KEYS (%s)', implode(' ', $keys)));
             }
-        } catch (\Exception $exception) {
+        } catch (Exception) {
             if ($this->logger) {
                 $message = 'Fastly service id is not available!';
                 $this->logger->error($message);
@@ -79,9 +81,9 @@ class FastlyService extends AbstractService
         try {
             $this->getClient()->post('purge_all');
             if ($this->logger) {
-                $this->logger->notice(\sprintf('FASTLY PURGE ALL:'));
+                $this->logger->notice(sprintf('FASTLY PURGE ALL:'));
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             if ($this->logger) {
                 $this->logger->error($exception->getMessage());
             }

@@ -12,13 +12,13 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 class FastlyServiceTest extends AbstractTest
 {
-    public function testIsLoadable()
+    public function testIsLoadable(): void
     {
         $object = new FastlyService();
         self::assertTrue(is_object($object), 'Object should be creatable');
     }
 
-    public function test_purgeAll()
+    public function test_purgeAll(): void
     {
         //if(...) {
         //    $this->markTestSkipped(....);

@@ -15,12 +15,12 @@ use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
 class FastlyMiddlewareTest extends AbstractTest
 {
-    public function testIsLoadable()
+    public function testIsLoadable(): void
     {
         $object = new FastlyMiddleware();
         self::assertTrue(is_object($object), 'Object should be creatable');
     }
-    public function test_is_response_a_ResponseInterface()
+    public function test_is_response_a_ResponseInterface(): void
     {
         $middleware = new FastlyMiddleware();
         $request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
@@ -30,7 +30,7 @@ class FastlyMiddlewareTest extends AbstractTest
         self::assertInstanceOf(ResponseInterface::class, $response);
     }
 
-    public function test_get_XCDN_Header_if_Fastly_is_disabled()
+    public function test_get_XCDN_Header_if_Fastly_is_disabled(): void
     {
         $middleware = new FastlyMiddleware();
         $request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
@@ -63,7 +63,7 @@ class FastlyMiddlewareTest extends AbstractTest
         self::assertEquals('disabled', $response->getHeader('X-CDN')[0]);
     }
 
-    public function test_PageCacheKey()
+    public function test_PageCacheKey(): void
     {
         $middleware = new FastlyMiddleware();
         $request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
