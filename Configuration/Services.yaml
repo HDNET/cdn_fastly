@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  HDNET\CdnFastly\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*'
+
+  # Register ConfigurationService as implementation of ConfigurationServiceInterface
+  HDNET\CdnFastly\Service\ConfigurationServiceInterface:
+    class: HDNET\CdnFastly\Service\ConfigurationService
+    public: false
