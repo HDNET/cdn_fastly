@@ -6,12 +6,11 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'Pavel Musitschenko',
     'author_email' => 'pavel.musitschenko@hdnet.de',
     'state' => 'beta',
-    'clearCacheOnLoad' => true,
     'version' => '0.3.0',
     'constraints' => [
         'depends' => [
-            'php' => '7.4.0-8.1.99',
-            'typo3' => '11.5.0-11.5.99',
+            'php' => '8.4.0-8.4.16',
+            'typo3' => '13.4.0-13.4.99',
         ],
     ],
 ];
