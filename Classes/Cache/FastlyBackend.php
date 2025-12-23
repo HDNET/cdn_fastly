@@ -10,7 +10,9 @@ use Override;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
+use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use function array_map;
 
 class FastlyBackend extends NullBackend implements LoggerAwareInterface
 {
@@ -63,6 +65,16 @@ class FastlyBackend extends NullBackend implements LoggerAwareInterface
         if ($fastlyService === null) {
             return;
         }
-        $fastlyService->purgeKeys($tags);
+
+        $tagStrings = [];
+        foreach ($tags as $tag) {
+            if ($tag instanceof CacheTag) {
+                $tagStrings[] = $tag->name;
+            } else {
+                $tagStrings[] = (string)$tag;
+            }
+        }
+
+        $fastlyService->purgeKeys($tagStrings);
     }
 }

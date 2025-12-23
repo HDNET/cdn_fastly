@@ -8,7 +8,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Core\Http\ApplicationType;
+use function array_map;
 use function array_unique;
 use function implode;
 use function is_array;
@@ -63,11 +65,22 @@ class FastlyMiddleware implements MiddlewareInterface
 
     protected function appendSurrogateKeys(ResponseInterface $response): ResponseInterface
     {
-        if (is_array($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.cache.collector')->getCacheTags()) && $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.cache.collector')->getCacheTags() !== []) {
-            $cacheTags = implode(' ', array_unique($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.cache.collector')->getCacheTags()));
-            $response = $response->withHeader('Surrogate-Key', $cacheTags);
+        $cacheTagObjects = $GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.cache.collector')->getCacheTags();
+        if (!is_array($cacheTagObjects) || $cacheTagObjects === []) {
+            return $response;
         }
-        return $response;
+
+        $cacheTagStrings = [];
+        foreach ($cacheTagObjects as $tag) {
+            if ($tag instanceof CacheTag) {
+                $cacheTagStrings[] = $tag->name;
+            } else {
+                $cacheTagStrings[] = (string)$tag;
+            }
+        }
+
+        $cacheTags = implode(' ', array_unique($cacheTagStrings));
+        return $response->withHeader('Surrogate-Key', $cacheTags);
     }
 
     protected function appendSurrogateControl(ResponseInterface $response): ResponseInterface
