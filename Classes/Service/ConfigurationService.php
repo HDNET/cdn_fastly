@@ -7,7 +7,7 @@ namespace HDNET\CdnFastly\Service;
 use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 class ConfigurationService implements ConfigurationServiceInterface
 {
@@ -19,18 +19,28 @@ class ConfigurationService implements ConfigurationServiceInterface
         return $config['apiKey'];
     }
 
-    public function getServiceId(): string
+    /**
+     * @return array<mixed>
+     */
+    protected function findConfiguration(): array
     {
-        $config = $this->findConfiguration();
-        $this->validArrayProperty($config, 'serviceId');
+        static $foundConfig;
 
-        return $config['serviceId'];
+        if ($foundConfig === null) {
+            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+            $foundConfig = (array)($configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_cdnfastly.']['settings.'] ?? []);
+        }
+
+        $checkEnvs = ['apiKey', 'serviceId'];
+        foreach ($checkEnvs as $value) {
+            if (isset($foundConfig[$value]) && \is_string($foundConfig[$value]) && \str_starts_with($foundConfig[$value], 'env:')) {
+                $foundConfig[$value] = \getenv(\mb_substr($foundConfig[$value], 4));
+            }
+        }
+
+        return $foundConfig;
     }
-    public function getSoftpurge(): bool
-    {
-        $config = $this->findConfiguration();
-        return ((bool)$config['softpurge'])? true : false;
-    }
+
     /**
      * @param array<mixed> $config
      * @param string $property
@@ -42,26 +52,17 @@ class ConfigurationService implements ConfigurationServiceInterface
         }
     }
 
-    /**
-     * @return array<mixed>
-     */
-    protected function findConfiguration(): array
+    public function getServiceId(): string
     {
-        static $foundConfig;
+        $config = $this->findConfiguration();
+        $this->validArrayProperty($config, 'serviceId');
 
-        if ($foundConfig === null) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $configurationManager = $objectManager->get(ConfigurationManager::class);
-            $foundConfig = (array)($configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_cdnfastly.']['settings.'] ?? []);
-        }
+        return $config['serviceId'];
+    }
 
-        $checkEnvs = ['apiKey', 'serviceId'];
-        foreach ($checkEnvs as $value) {
-            if (isset($foundConfig[$value]) && \is_string($foundConfig[$value]) && \str_starts_with($foundConfig[$value], 'env:')) {
-                $foundConfig[$value] = \getenv(\mb_substr($foundConfig[$value], 4));
-            }
-        }
-
-        return $foundConfig;
+    public function getSoftpurge(): bool
+    {
+        $config = $this->findConfiguration();
+        return ((bool)$config['softpurge']) ? true : false;
     }
 }

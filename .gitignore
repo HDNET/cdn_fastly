@@ -1,3 +1,5 @@
 /.idea/
 /.Build
 /var
+/.DS_Store
+/.php-cs-fixer.cache

@@ -5,26 +5,27 @@ declare(strict_types=1);
 namespace HDNET\CdnFastly\Tests\Unit\Middleware;
 
 use HDNET\CdnFastly\Middleware\FastlyMiddleware;
-use HDNET\CdnFastly\Tests\Unit\AbstractTest;
+use HDNET\CdnFastly\Tests\Unit\AbstractTestCase;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Service\EnvironmentService;
+use TYPO3\CMS\Core\Http\ServerRequest;
 
-class FastlyMiddlewareTest extends AbstractTest
+class FastlyMiddlewareTest extends AbstractTestCase
 {
     public function testIsLoadable()
     {
         $object = new FastlyMiddleware();
         self::assertTrue(is_object($object), 'Object should be creatable');
     }
+
     public function test_is_response_a_ResponseInterface()
     {
         $middleware = new FastlyMiddleware();
-        $request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
+        $request = (new ServerRequest())->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
         $handler = $this->getMockBuilder(RequestHandlerInterface::class)->getMock();
+        $handler->method('handle')->willReturn(new Response());
         $response = $middleware->process($request, $handler);
 
         self::assertInstanceOf(ResponseInterface::class, $response);
@@ -33,13 +34,11 @@ class FastlyMiddlewareTest extends AbstractTest
     public function test_get_XCDN_Header_if_Fastly_is_disabled()
     {
         $middleware = new FastlyMiddleware();
-        $request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
+        $request = (new ServerRequest())->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
         $handler = $this->getMockBuilder(RequestHandlerInterface::class)->getMock();
         $handler->method('handle')->willReturn(new Response());
-        $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->setMethods(['isEnvironmentInFrontendMode'])->getMock();
-        $environmentServiceMock->method('isEnvironmentInFrontendMode')->willReturn(true);
 
-        $GLOBALS['TSFE'] = new class() {
+        $GLOBALS['TSFE'] = new class () {
             public $page = [
                 'fastly' => false,
             ];
@@ -55,8 +54,6 @@ class FastlyMiddlewareTest extends AbstractTest
             }
         };
 
-        GeneralUtility::setSingletonInstance(EnvironmentService::class, $environmentServiceMock);
-
         $response = $middleware->process($request, $handler);
 
         self::assertTrue($response->hasHeader('X-CDN'));
@@ -66,15 +63,12 @@ class FastlyMiddlewareTest extends AbstractTest
     public function test_PageCacheKey()
     {
         $middleware = new FastlyMiddleware();
-        $request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
+        $request = (new ServerRequest())->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
 
         $handler = $this->getMockBuilder(RequestHandlerInterface::class)->getMock();
         $handler->method('handle')->willReturn(new Response());
 
-        $environmentServiceMock = $this->getMockBuilder(EnvironmentService::class)->setMethods(['isEnvironmentInFrontendMode'])->getMock();
-        $environmentServiceMock->method('isEnvironmentInFrontendMode')->willReturn(true);
-
-        $GLOBALS['TSFE'] = new class() {
+        $GLOBALS['TSFE'] = new class () {
             public $page = [
                 'fastly' => true,
             ];
@@ -91,8 +85,6 @@ class FastlyMiddlewareTest extends AbstractTest
                 return 1337;
             }
         };
-
-        GeneralUtility::setSingletonInstance(EnvironmentService::class, $environmentServiceMock);
 
         $response = $middleware->process($request, $handler);
 

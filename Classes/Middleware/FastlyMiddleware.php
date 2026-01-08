@@ -9,8 +9,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
 class FastlyMiddleware implements MiddlewareInterface
 {
@@ -32,7 +30,7 @@ class FastlyMiddleware implements MiddlewareInterface
     {
         $response = $handler->handle($request);
 
-        if (!$this->isEnvironmentInFrontendMode()) {
+        if (!$this->isEnvironmentInFrontendMode($request)) {
             return $response;
         }
 
@@ -44,17 +42,12 @@ class FastlyMiddleware implements MiddlewareInterface
 
         $response = $this->appendSurrogateKeys($response);
         $response = $this->appendSurrogateControl($response);
-        $response = $response->withHeader('X-CDN', 'enabled');
-
-        return $response;
+        return $response->withHeader('X-CDN', 'enabled');
     }
 
-    protected function isEnvironmentInFrontendMode(): bool
+    protected function isEnvironmentInFrontendMode(ServerRequestInterface $request): bool
     {
-        // We don't need extbase here, so no ObjectManager, yet.
-        GeneralUtility::makeInstance(EnvironmentService::class);
-
-        return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
+        return ApplicationType::fromRequest($request)->isFrontend();
     }
 
     protected function isFastlyDisabledOrNotConfigured(): bool
@@ -73,6 +66,11 @@ class FastlyMiddleware implements MiddlewareInterface
 
     protected function appendSurrogateControl(ResponseInterface $response): ResponseInterface
     {
+        $cacheControlHeaderValue = $response->getHeader('Cache-Control')[0] ?? '';
+        if (\mb_strpos($cacheControlHeaderValue, 'private') !== false) {
+            return $response;
+        }
+
         $staleTimeout = 14400; // 4 hours
         $staleIfErrorTimeout = 604800; // 168 hours
         $additions = [
@@ -80,12 +78,7 @@ class FastlyMiddleware implements MiddlewareInterface
             'stale-if-error' => $staleIfErrorTimeout,
         ];
 
-        $cacheControlHeaderValue = $response->getHeader('Cache-Control')[0];
-        if (\mb_strpos($cacheControlHeaderValue, 'private') !== false) {
-            return $response;
-        }
-
-        $cacheControlHeaderValue = 'max-age='.$GLOBALS['TSFE']->get_cache_timeout().', public';
+        $cacheControlHeaderValue = 'max-age=' . $GLOBALS['TSFE']->get_cache_timeout() . ', public';
         foreach ($additions as $key => $value) {
             $cacheControlHeaderValue .= ',' . $key . '=' . $value;
         }

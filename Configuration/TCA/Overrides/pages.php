@@ -12,6 +12,7 @@ $GLOBALS['TCA']['pages']['columns']['fastly'] = [
     'config' => [
         'type' => 'check',
         'renderType' => 'checkboxToggle',
+        'description' => 'LLL:EXT:cdn_fastly/Resources/Private/Language/locallang.xlf:fastly.alttitle',
         'items' => [
             [
                 0 => false,

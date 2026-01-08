@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Service;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 
@@ -14,15 +15,7 @@ class FastlyService extends AbstractService
      */
     protected $baseUrl = 'https://api.fastly.com/service/{serviceId}/';
 
-    /**
-     * @var ConfigurationServiceInterface
-     */
-    protected $configuration;
-
-    public function injectConfigurationService(ConfigurationServiceInterface $configurationService): void
-    {
-        $this->configuration = $configurationService;
-    }
+    public function __construct(private readonly ConfigurationServiceInterface $configuration) {}
 
     /**
      * Purge single tag from fastly
@@ -33,58 +26,9 @@ class FastlyService extends AbstractService
     {
         try {
             $this->getClient()->request('POST', 'purge/' . $key);
-            if ($this->logger) {
-                $this->logger->debug(\sprintf('FASTLY PURGE KEY (%s)', $key));
-            }
-        } catch (\Exception $exception) {
-            if ($this->logger) {
-                $message = 'Fastly service id is not available!';
-                $this->logger->error($message);
-            }
-        }
-    }
-
-    /**
-     * Pruge multiple tags from CDN
-     *
-     * @param array<string> $keys
-     */
-    public function purgeKeys(array $keys): void
-    {
-        if (empty($keys)) {
-            return;
-        }
-        try {
-            $this->getClient()->request('POST', 'purge/', [
-                'headers' => [
-                    'Surrogate-Key' => implode(' ', $keys),
-                ],
-            ]);
-            if ($this->logger) {
-                $this->logger->debug(\sprintf('FASTLY PURGE KEYS (%s)', implode(' ', $keys)));
-            }
-        } catch (\Exception $exception) {
-            if ($this->logger) {
-                $message = 'Fastly service id is not available!';
-                $this->logger->error($message);
-            }
-        }
-    }
-
-    /**
-     * Purge all cached objects from Fastly
-     */
-    public function purgeAll(): void
-    {
-        try {
-            $this->getClient()->post('purge_all');
-            if ($this->logger) {
-                $this->logger->notice(\sprintf('FASTLY PURGE ALL:'));
-            }
-        } catch (\Exception $exception) {
-            if ($this->logger) {
-                $this->logger->error($exception->getMessage());
-            }
+            $this->logger?->debug(\sprintf('FASTLY PURGE KEY (%s)', $key));
+        } catch (Exception) {
+            $this->logger?->error('Fastly service id is not available!');
         }
     }
 
@@ -111,10 +55,45 @@ class FastlyService extends AbstractService
         $httpOptions['timeout'] = 10.0; // 10 seconds
         $httpOptions['base_uri'] = str_replace('{serviceId}', $serviceId, $this->baseUrl);
         $httpOptions['headers']['Fastly-Key'] = $apiToken;
-        if($this->configuration->getSoftpurge()){
+        if ($this->configuration->getSoftpurge()) {
             $httpOptions['headers']['Fastly-Soft-Purge'] = 1;
         }
 
         return new Client($httpOptions);
+    }
+
+    /**
+     * Pruge multiple tags from CDN
+     *
+     * @param array<string> $keys
+     */
+    public function purgeKeys(array $keys): void
+    {
+        if (empty($keys)) {
+            return;
+        }
+        try {
+            $this->getClient()->request('POST', 'purge/', [
+                'headers' => [
+                    'Surrogate-Key' => implode(' ', $keys),
+                ],
+            ]);
+            $this->logger?->debug(\sprintf('FASTLY PURGE KEYS (%s)', implode(' ', $keys)));
+        } catch (Exception) {
+            $this->logger?->error('Fastly service id is not available!');
+        }
+    }
+
+    /**
+     * Purge all cached objects from Fastly
+     */
+    public function purgeAll(): void
+    {
+        try {
+            $this->getClient()->post('purge_all');
+            $this->logger?->notice(\sprintf('FASTLY PURGE ALL:'));
+        } catch (Exception $exception) {
+            $this->logger?->error($exception->getMessage());
+        }
     }
 }

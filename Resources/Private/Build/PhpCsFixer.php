@@ -3,6 +3,6 @@
 $config = \TYPO3\CodingStandards\CsFixerConfig::create();
 $config->getFinder()
     ->exclude('templates')
-    ->in(__DIR__);
+    ->in(__DIR__ . '/../../../');
 
 return $config;

@@ -15,6 +15,9 @@
 			<trans-unit id="pages.fastly">
 				<source>Fastly</source>
 			</trans-unit>
+			<trans-unit id="fastly.alttitle">
+				<source><![CDATA[CAUTION: When fastly is activated, it will always send the correct x-* headers. When it is disabled, a hidden mechanism will check, if the current page is the news detail page and specific news headers will be send. This behaviour can not be disabled. It can only be replaced with fastly activated.]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

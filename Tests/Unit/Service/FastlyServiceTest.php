@@ -4,33 +4,16 @@ declare(strict_types=1);
 
 namespace HDNET\CdnFastly\Tests\Unit\Service;
 
+use HDNET\CdnFastly\Service\ConfigurationServiceInterface;
 use HDNET\CdnFastly\Service\FastlyService;
-use HDNET\CdnFastly\Tests\Unit\AbstractTest;
-use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Extbase\Object\Container\Container;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use HDNET\CdnFastly\Tests\Unit\AbstractTestCase;
 
-class FastlyServiceTest extends AbstractTest
+class FastlyServiceTest extends AbstractTestCase
 {
     public function testIsLoadable()
     {
-        $object = new FastlyService();
-        self::assertTrue(is_object($object), 'Object should be creatable');
-    }
-
-    public function test_purgeAll()
-    {
-        //if(...) {
-        //    $this->markTestSkipped(....);
-        //} ggf. umgebngsvariablen
-
-        $objectManager = new ObjectManager();
-        $container = $objectManager->get(Container::class);
-
-        $service = $objectManager->get(FastlyService::class);
-
-        $response = $service->purgeAll();
-
-        self::assertInstanceOf(ResponseInterface::class, $response);
+        $configurationService = $this->getMockBuilder(ConfigurationServiceInterface::class)->getMock();
+        $object = new FastlyService($configurationService);
+        self::assertInstanceOf(FastlyService::class, $object, 'Object should be creatable');
     }
 }
