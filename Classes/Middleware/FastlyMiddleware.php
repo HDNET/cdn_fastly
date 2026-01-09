@@ -78,7 +78,12 @@ class FastlyMiddleware implements MiddlewareInterface
             'stale-if-error' => $staleIfErrorTimeout,
         ];
 
-        $cacheControlHeaderValue = 'max-age=' . $GLOBALS['TSFE']->get_cache_timeout() . ', public';
+        $cacheTimeout = 3600;
+        if (preg_match('/max-age=(\d+)/', $cacheControlHeaderValue, $matches)) {
+            $cacheTimeout = (int)$matches[1];
+        }
+
+        $cacheControlHeaderValue = 'max-age=' . $cacheTimeout . ', public';
         foreach ($additions as $key => $value) {
             $cacheControlHeaderValue .= ',' . $key . '=' . $value;
         }
