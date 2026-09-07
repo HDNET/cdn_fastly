@@ -19,16 +19,12 @@ class ConfigurationService implements ConfigurationServiceInterface
         return $config['apiKey'];
     }
 
-    /**
-     * @return array<mixed>
-     */
     protected function findConfiguration(): array
     {
         static $foundConfig;
 
         if ($foundConfig === null) {
-            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-            $foundConfig = (array)($configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT)['plugin.']['tx_cdnfastly.']['settings.'] ?? []);
+            $foundConfig = \array_merge($this->findTypoScriptConfiguration(), $this->findGlobalConfiguration());
         }
 
         $checkEnvs = ['apiKey', 'serviceId'];
@@ -41,15 +37,28 @@ class ConfigurationService implements ConfigurationServiceInterface
         return $foundConfig;
     }
 
-    /**
-     * @param array<mixed> $config
-     * @param string $property
-     */
     protected function validArrayProperty(array $config, string $property): void
     {
-        if (!isset($config[$property]) || !\is_string($config[$property]) || empty($config[$property])) {
+        if (!\is_string($config[$property]) || empty($config[$property])) {
             throw new RuntimeException('No or invalid property: ' . $property);
         }
+    }
+
+    protected function findTypoScriptConfiguration(): array
+    {
+        try {
+            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+            $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        } catch (\Exception) {
+            return [];
+        }
+        return (array)($typoScript['plugin.']['tx_cdnfastly.']['settings.'] ?? []);
+    }
+
+    protected function findGlobalConfiguration(): array
+    {
+        $config = (array)($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['cdn_fastly'] ?? []);
+        return \array_filter($config, static fn($value): bool => $value !== '' && $value !== null);
     }
 
     public function getServiceId(): string
@@ -63,6 +72,6 @@ class ConfigurationService implements ConfigurationServiceInterface
     public function getSoftpurge(): bool
     {
         $config = $this->findConfiguration();
-        return ((bool)$config['softpurge']) ? true : false;
+        return (bool)$config['softpurge'];
     }
 }

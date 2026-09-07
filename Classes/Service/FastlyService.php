@@ -6,42 +6,24 @@ namespace HDNET\CdnFastly\Service;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
 
 class FastlyService extends AbstractService
 {
-    /**
-     * @var string
-     */
-    protected $baseUrl = 'https://api.fastly.com/service/{serviceId}/';
+    protected string $baseUrl = 'https://api.fastly.com/service/{serviceId}/';
 
-    public function __construct(private readonly ConfigurationServiceInterface $configuration) {}
-
-    /**
-     * Purge single tag from fastly
-     *
-     * @param string $key
-     */
-    public function purgeKey(string $key): void
+    public function __construct(private readonly ConfigurationServiceInterface $configuration)
     {
-        try {
-            $this->getClient()->request('POST', 'purge/' . $key);
-            $this->logger?->debug(\sprintf('FASTLY PURGE KEY (%s)', $key));
-        } catch (Exception) {
-            $this->logger?->error('Fastly service id is not available!');
-        }
     }
 
-    /**
-     * @return Client
-     */
-    protected function getClient()
+    protected function getClient(): Client
     {
         $serviceId = $this->configuration->getServiceId();
         $apiToken = $this->configuration->getApiKey();
         $httpOptions = $GLOBALS['TYPO3_CONF_VARS']['HTTP'];
         if (isset($httpOptions['handler'])) {
-            if (is_array($httpOptions['handler'] && !empty($httpOptions['handler']))) {
+            if (is_array(!empty($httpOptions['handler']))) {
                 $stack = HandlerStack::create();
                 foreach ($httpOptions['handler'] as $handler) {
                     $stack->push($handler);
@@ -62,11 +44,19 @@ class FastlyService extends AbstractService
         return new Client($httpOptions);
     }
 
-    /**
-     * Pruge multiple tags from CDN
-     *
-     * @param array<string> $keys
-     */
+    public function purgeKey(string $key): void
+    {
+        try {
+            $this->getClient()->request('POST', 'purge/' . $key);
+            $this->logger?->debug(\sprintf('FASTLY PURGE KEY (%s)', $key));
+        } catch (Exception|GuzzleException $exception) {
+            $this->logger?->error(
+                \sprintf('FASTLY PURGE KEY (%s) failed: %s', $key, $exception->getMessage()),
+                ['exception' => $exception]
+            );
+        }
+    }
+
     public function purgeKeys(array $keys): void
     {
         if (empty($keys)) {
@@ -79,21 +69,24 @@ class FastlyService extends AbstractService
                 ],
             ]);
             $this->logger?->debug(\sprintf('FASTLY PURGE KEYS (%s)', implode(' ', $keys)));
-        } catch (Exception) {
-            $this->logger?->error('Fastly service id is not available!');
+        } catch (Exception|GuzzleException $exception) {
+            $this->logger?->error(
+                \sprintf('FASTLY PURGE KEYS (%s) failed: %s', implode(' ', $keys), $exception->getMessage()),
+                ['exception' => $exception]
+            );
         }
     }
 
-    /**
-     * Purge all cached objects from Fastly
-     */
     public function purgeAll(): void
     {
         try {
             $this->getClient()->post('purge_all');
-            $this->logger?->notice(\sprintf('FASTLY PURGE ALL:'));
-        } catch (Exception $exception) {
-            $this->logger?->error($exception->getMessage());
+            $this->logger?->notice('FASTLY PURGE ALL');
+        } catch (Exception|GuzzleException $exception) {
+            $this->logger?->error(
+                \sprintf('FASTLY PURGE ALL failed: %s', $exception->getMessage()),
+                ['exception' => $exception]
+            );
         }
     }
 }

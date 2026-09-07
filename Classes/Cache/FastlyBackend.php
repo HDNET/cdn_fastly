@@ -35,14 +35,17 @@ class FastlyBackend extends NullBackend
         if (!$this->initialized) {
             try {
                 $this->fastlyService = GeneralUtility::makeInstance(FastlyService::class);
-            } catch (Exception) {
-                $this->logger?->error('Fasty service was not build');
+            } catch (Exception $exception) {
+                $this->logger?->error(
+                    'Fastly service could not be built: ' . $exception->getMessage(),
+                    ['exception' => $exception]
+                );
             }
             $this->initialized = true;
         }
 
         if ($this->fastlyService === null) {
-            $this->logger?->error('Fasty service was not build');
+            $this->logger?->error('Fastly service is not available, skipping purge');
             return;
         }
         $callback();
